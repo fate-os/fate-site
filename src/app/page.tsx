@@ -26,7 +26,6 @@ export default function Home() {
           borderRadius: "10px",
           overflow: "hidden",
         }}
-        className="_container"
       >
         <div
           style={{
