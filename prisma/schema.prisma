@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id                         String    @id @default(uuid())
+  first_name                 String
+  last_name                  String
+  password                   String?
+  email                      String    @unique
+  photo_url                  String?
+  birthday                   DateTime?
+  country_name               String?   @db.Text
+  phone_number               String?   @db.Text
+  zip_code                   String?   @db.Text
+  reset_password_pin         Int?
+  reset_password_expire_date DateTime?
+  verify_pin                 Int?
+  verify_pin_expire_date     DateTime?
+  verify_status              Boolean   @default(false)
+  super_admin                Boolean?  @default(false)
+  created_at                 DateTime? @default(now())
+  updated_at                 DateTime? @updatedAt
+  last_login_at              DateTime?
+}
+
+model media {
+  id         String    @id @default(uuid())
+  url        String
+  file_name  String
+  size       Float
+  meme_type  String
+  created_at DateTime? @default(now())
+}
+
+enum AccountProvider {
+  EMAIL
+  GOOGLE
+}
+
+enum UserAccountType {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
