@@ -8,7 +8,7 @@ import { iconButtonClasses } from '@mui/material/IconButton';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { allLangs } from 'src/locales';
-import { _contacts, _notifications } from 'src/_mock';
+
 import { varAlpha, stylesMode } from 'src/theme/styles';
 
 import { bulletColor } from 'src/components/nav-section';
@@ -25,10 +25,6 @@ import { _workspaces } from '../config-nav-workspace';
 import { LayoutSection } from '../core/layout-section';
 import { navData as dashboardNavData, adminNavData } from '../config-nav-dashboard';
 import { useAppSelector } from '@/store/hooks';
-import { Box, Button } from '@mui/material';
-import { SubscriptionPlan } from '@/types';
-import Link from 'next/link';
-import { paths } from '@/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -91,22 +87,6 @@ export function DashboardLayout({ sx, children, data }) {
                   layoutQuery={layoutQuery}
                   cssVars={navColorVars.section}
                 />
-              ) : null,
-              rightAreaStart: account ? (
-                <Box>
-                  {account.purchased_subscription.subscription.subscription_plan ===
-                    SubscriptionPlan.FREE && (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="success"
-                      LinkComponent={Link}
-                      href={paths.plans}
-                    >
-                      Upgrade
-                    </Button>
-                  )}
-                </Box>
               ) : null,
             }}
             slotProps={{

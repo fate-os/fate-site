@@ -33,7 +33,7 @@ export function MainLayout({ sx, data, children }) {
 
   return (
     <>
-      <NavMobile data={navData} open={mobileNavOpen.value} onClose={mobileNavOpen.onFalse} />
+      <NavMobile data={navData} open={mobileNavOpen.value} b onClose={mobileNavOpen.onFalse} />
 
       <LayoutSection
         /** **************************************
@@ -48,7 +48,7 @@ export function MainLayout({ sx, data, children }) {
               langs: allLangs,
             }}
             slotsDisplay={{
-              account: false,
+              account: account ? true : loadingAccount ? false : false,
               signIn: false,
               helpLink: false,
               contacts: false,

@@ -25,7 +25,7 @@ import { useAuthContext } from 'src/auth/hooks';
 
 import { REGISTER_ACCOUNT } from '@/graphql/mutation/AuthMutation';
 import { useMutation } from '@apollo/client';
-import TermsAcceptance from '@/sections/terms-and-policy/TermsAcceptance';
+// import TermsAcceptance from '@/sections/terms-and-policy/TermsAcceptance';
 import { useAppDispatch } from '@/store/hooks';
 import { accountInitialize } from '@/store/features/auth.reducer';
 import Cookies from 'js-cookie';
@@ -173,7 +173,7 @@ export function JwtSignUpView() {
           {renderForm}
         </Form>
       </Stack>
-      <TermsAcceptance></TermsAcceptance>
+      {/* <TermsAcceptance></TermsAcceptance> */}
     </>
   );
 }

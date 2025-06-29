@@ -20,70 +20,7 @@ import Link from 'next/link';
 export function NavUpgrade({ sx, ...other }) {
   const { account } = useAppSelector((s) => s.auth);
 
-  return (
-    <>
-      {account?.purchased_subscription.subscription.subscription_plan === SubscriptionPlan.FREE ? (
-        <Stack sx={{ px: 2, py: 5, textAlign: 'center', ...sx }} {...other}>
-          <Stack alignItems="center">
-            <Box sx={{ position: 'relative' }}>
-              <Avatar
-                src={account?.photo_url}
-                alt={account?.first_name}
-                sx={{ width: 48, height: 48 }}
-              >
-                {account?.first_name?.charAt(0).toUpperCase()}
-              </Avatar>
-
-              <Label
-                color="success"
-                variant="filled"
-                sx={{
-                  top: -6,
-                  px: 0.5,
-                  left: 40,
-                  height: 20,
-                  position: 'absolute',
-                  borderBottomLeftRadius: 2,
-                }}
-              >
-                Free
-              </Label>
-            </Box>
-
-            <Stack spacing={0.5} sx={{ mb: 2, mt: 1.5, width: 1 }}>
-              <Typography
-                variant="subtitle2"
-                noWrap
-                sx={{ color: 'var(--layout-nav-text-primary-color)' }}
-              >
-                {account?.first_name + account.last_name}
-              </Typography>
-
-              <Typography
-                variant="body2"
-                noWrap
-                sx={{ color: 'var(--layout-nav-text-disabled-color)' }}
-              >
-                {account?.email}
-              </Typography>
-            </Stack>
-
-            <Button
-              variant="contained"
-              LinkComponent={Link}
-              href={paths.plans}
-              target="_blank"
-              rel="noopener"
-            >
-              Upgrade to Pro
-            </Button>
-          </Stack>
-        </Stack>
-      ) : (
-        <></>
-      )}
-    </>
-  );
+  return <></>;
 }
 
 // ----------------------------------------------------------------------
