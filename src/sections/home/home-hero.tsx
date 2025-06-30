@@ -5,34 +5,23 @@ import Grid from '@mui/material/Grid';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
-import { Button } from '@mui/material';
-import { SignInButton } from '@/layouts/components/sign-in-button';
 import { JwtSignInView } from '../auth/jwt';
+import { DashboardContent } from '@/layouts/dashboard';
 
 const HomeHero = () => {
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <Box
-      sx={{
-        fontFamily: 'Georgia, serif',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        py: 4,
-      }}
-    >
+    <DashboardContent>
       <Box
         sx={{
           width: '100%',
-          maxWidth: 1200,
+
           bgcolor: 'white',
           boxShadow: '0 0 15px rgba(0,0,0,0.1)',
           borderRadius: 2,
           overflow: 'hidden',
-          mx: 2,
         }}
       >
         <Grid container direction={isSmDown ? 'column' : 'row'}>
@@ -60,7 +49,7 @@ const HomeHero = () => {
             </Box>
           </Grid>
           <Grid item xs={12} md={2}>
-            <Box sx={{ p: 2, pr: 0, pt: 5, color: '#333', lineHeight: 1.8 }}>
+            <Box sx={{ p: { xs: 2.5, md: 4 }, pr: 0, pt: 5, color: '#333', lineHeight: 1.8 }}>
               <Typography variant="h6">《推背图》第59象</Typography>
               <Typography
                 variant="h5"
@@ -103,8 +92,10 @@ const HomeHero = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} md={3.5} sx={{ p: 4, pr: 0 }}>
-            <JwtSignInView showLess></JwtSignInView>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ p: { xs: 2.5, md: 4 } }}>
+              <JwtSignInView showLess></JwtSignInView>
+            </Box>
             {/* <Box
               sx={{
                 display: 'flex',
@@ -118,7 +109,7 @@ const HomeHero = () => {
           </Grid>
         </Grid>
       </Box>
-    </Box>
+    </DashboardContent>
   );
 };
 
