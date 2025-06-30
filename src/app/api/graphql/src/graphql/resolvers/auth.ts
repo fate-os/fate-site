@@ -15,7 +15,7 @@ import { createHashPassword, getResetPasswordToken } from '../../helper/auth';
 import { UseSendEmail } from '../../helper/sendMail';
 import { useProfileParser } from '../../utils/parser';
 import { GraphQLError } from 'graphql';
-import { generateResetPinEmail, generateWelcomeEmail } from '../../helper/emialTemplatte';
+import { generateResetPinEmail } from '../../helper/emialTemplatte';
 import { FateOsClient } from '@/db/prisma';
 
 const currentAccount = async (_: any, __: any, context: AppContext) => {

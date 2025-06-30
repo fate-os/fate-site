@@ -1,7 +1,18 @@
-import React from 'react';
+import { CONFIG } from 'src/config-global';
 
-const CommingSoon = () => {
-  return <h1> Payment page - CommingSoon</h1>;
-};
+import { PaymentView } from 'src/sections/payment/view';
 
-export default CommingSoon;
+// ----------------------------------------------------------------------
+
+export const metadata = { title: `Payment - ${CONFIG.site.name}` };
+
+export default async function Page({
+  params,
+}: {
+  searchParams: any;
+  params: Promise<{ amount: string }>;
+}) {
+  const { amount } = await params;
+
+  return <PaymentView years={amount} />;
+}

@@ -13,20 +13,18 @@ const HomeHero = () => {
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <DashboardContent>
+    <DashboardContent sx={{ justifyContent: 'center' }}>
       <Box
         sx={{
           width: '100%',
-
-          bgcolor: 'white',
           boxShadow: '0 0 15px rgba(0,0,0,0.1)',
           borderRadius: 2,
           overflow: 'hidden',
         }}
       >
         <Grid container direction={isSmDown ? 'column' : 'row'}>
-          <Grid item xs={12} md={4}>
-            <Box sx={{ p: { xs: 3, md: 5 }, color: '#333', lineHeight: 1.8 }}>
+          <Grid item xs={12} sm={6} md={3.5}>
+            <Box sx={{ p: { xs: 2.5, md: 4 } }}>
               <Typography variant="h5" sx={{ color: '#b30059', fontWeight: 700 }} gutterBottom>
                 The prophecy says:
               </Typography>
@@ -48,8 +46,8 @@ const HomeHero = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={2}>
-            <Box sx={{ p: { xs: 2.5, md: 4 }, pr: 0, pt: 5, color: '#333', lineHeight: 1.8 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box sx={{ p: { xs: 2.5, md: 4 }, pr: 0 }}>
               <Typography variant="h6">《推背图》第59象</Typography>
               <Typography
                 variant="h5"
@@ -73,7 +71,7 @@ const HomeHero = () => {
               <Typography variant="body1">东南西北 尽和为一</Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} sm={6} md={2}>
             <Box
               sx={{
                 display: 'flex',
@@ -92,7 +90,7 @@ const HomeHero = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} sm={6} md={3.5}>
             <Box sx={{ p: { xs: 2.5, md: 4 } }}>
               <JwtSignInView showLess></JwtSignInView>
             </Box>

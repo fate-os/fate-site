@@ -1,11 +1,6 @@
 const typeDefs = `#graphql
 
-type SubscriptionDetails {
-    success: Boolean!
-    message: String
-    # clientSecret: String
-    subscription:Subscription
-}
+
 type SessionDetails {
     success: Boolean!
     message: String
@@ -23,22 +18,16 @@ type VerifySession {
     currency:String
 }
 
-type ApplyCouponResponse {
-    success: Boolean!
-    message: String
-    coupon:CouponObject
-}
+
 
 
 type Query {
-    subscriptionById(id:ID,currency:String):SubscriptionDetails
-    createSession(subscriptionId:ID,currency:String,annually:Boolean,freeTrial:Boolean,couponId:String):SessionDetails
+   
+    createSession(years:Int):SessionDetails
     verifyPayment(sessionId:String):VerifyDetails
 }
 
-type Mutation {
-    applyCoupon(code:String!,subscriptionId:ID!):ApplyCouponResponse
-}
+
 
 `;
 

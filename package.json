@@ -121,6 +121,7 @@
     "remark-gfm": "^4.0.1",
     "simplebar-react": "^3.3.0",
     "sonner": "^1.7.4",
+    "stripe": "^18.2.1",
     "stylis": "^4.3.6",
     "stylis-plugin-rtl": "^2.1.1",
     "swr": "^2.3.2",
