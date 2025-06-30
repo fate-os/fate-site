@@ -188,9 +188,6 @@ importers:
       embla-carousel-react:
         specifier: ^8.5.2
         version: 8.5.2(react@19.0.0)
-      fate-os:
-        specifier: 'link:'
-        version: 'link:'
       firebase:
         specifier: ^11.3.0
         version: 11.3.0
