@@ -73,7 +73,7 @@ export function PaymentSummary({ years, sx, ...other }) {
           onClick={() => setContinuePayment(years)}
           sx={{ mt: 5, mb: 3 }}
         >
-          Pay
+          Continue
         </Button>
 
         <Stack alignItems="center" spacing={1}>

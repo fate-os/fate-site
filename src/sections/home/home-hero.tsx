@@ -46,8 +46,8 @@ const HomeHero = () => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Box sx={{ p: { xs: 2.5, md: 4 }, pr: 0 }}>
+          <Grid item xs={12} sm={6} md={3} lg={2.5}>
+            <Box sx={{ p: { xs: 2.5, md: 4 }, paddingRight: '0 !important' }}>
               <Typography variant="h6">《推背图》第59象</Typography>
               <Typography
                 variant="h5"
@@ -90,7 +90,7 @@ const HomeHero = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3.5}>
+          <Grid item xs={12} sm={6} md={3.5} lg={4}>
             <Box sx={{ p: { xs: 2.5, md: 4 } }}>
               <JwtSignInView showLess></JwtSignInView>
             </Box>

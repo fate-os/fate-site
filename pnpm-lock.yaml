@@ -17,6 +17,9 @@ importers:
       '@auth0/auth0-react':
         specifier: ^2.3.0
         version: 2.3.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@canvasjs/react-charts':
+        specifier: ^1.0.2
+        version: 1.0.2(@canvasjs/charts@3.12.21)(react@19.0.0)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1177,6 +1180,15 @@ packages:
   '@babel/types@7.26.8':
     resolution: {integrity: sha512-eUuWapzEGWFEpHFxgEaBG8e3n6S8L3MSu0oda755rOfabWPnh0Our1AozNFVUxGFIhbKgd1ksprsoDGMinTOTA==}
     engines: {node: '>=6.9.0'}
+
+  '@canvasjs/charts@3.12.21':
+    resolution: {integrity: sha512-38h+eMVOLOLrBsVlkv3SId/OYqCHvhwpUCX0AJGljaYXuZkub/nu+ugaqTKd8e8KWoBWNcls9SvEMlZ6v7/8Ng==}
+
+  '@canvasjs/react-charts@1.0.2':
+    resolution: {integrity: sha512-PZgJlDbGdMF4AN/KvrvGY9X50EByJMZ7MHfQB/U0aky9Onn9mt0CpsvwudBsBe+DofaV3SHR4SHn/Wfo/pubDw==}
+    peerDependencies:
+      '@canvasjs/charts': ^3.7.5
+      react: '>=16.0.0'
 
   '@dnd-kit/accessibility@3.1.1':
     resolution: {integrity: sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==}
@@ -7065,6 +7077,13 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
+
+  '@canvasjs/charts@3.12.21': {}
+
+  '@canvasjs/react-charts@1.0.2(@canvasjs/charts@3.12.21)(react@19.0.0)':
+    dependencies:
+      '@canvasjs/charts': 3.12.21
+      react: 19.0.0
 
   '@dnd-kit/accessibility@3.1.1(react@19.0.0)':
     dependencies:

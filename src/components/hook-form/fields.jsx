@@ -11,7 +11,12 @@ import { RHFSwitch, RHFMultiSwitch } from './rhf-switch';
 import { RHFSelect, RHFMultiSelect } from './rhf-select';
 import { RHFCheckbox, RHFMultiCheckbox } from './rhf-checkbox';
 
-import { RHFDatePicker, RHFMobileDateTimePicker } from './rhf-date-picker';
+import {
+  RHFDatePicker,
+  RHFMobileDateTimePicker,
+  RHFDesktopTimePicker,
+  RHFMobileTimePicker,
+} from './rhf-date-picker';
 
 // ----------------------------------------------------------------------
 
@@ -36,4 +41,6 @@ export const Field = {
   MultiCheckbox: RHFMultiCheckbox,
   CountrySelect: RHFCountrySelect,
   MobileDateTimePicker: RHFMobileDateTimePicker,
+  MobileTimePicker: RHFMobileTimePicker,
+  DesktopTimePicker: RHFDesktopTimePicker,
 };

@@ -13,7 +13,7 @@ const PaymentSuccess: React.FC<VerifyPaymentResult> = ({ status }) => {
   useEffect(() => {
     if (status === 'paid') {
       setTimeout(() => {
-        window.location.href = paths.results;
+        window.location.href = paths.destiny;
       }, 2000);
     }
   }, [status]);

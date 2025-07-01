@@ -11,7 +11,7 @@ export const paths = {
   page403: '/error/403',
   page404: '/error/404',
   page500: '/error/500',
-  results: `${ROOTS.APP}/results`,
+  destiny: `${ROOTS.APP}/destiny`,
   // AUTH
   auth: {
     account: {
