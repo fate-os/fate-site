@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -7,13 +7,29 @@ import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import { JwtSignInView } from '../auth/jwt';
 import { DashboardContent } from '@/layouts/dashboard';
+import { useAppSelector } from '@/store/hooks';
+import { LoadingScreen } from '@/components/loading-screen';
+import Link from '@mui/material/Link';
+import { paths } from '@/routes/paths';
 
 const HomeHero = () => {
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { account, loadingAccount } = useAppSelector((s) => s.auth);
+
+  const getSize = useMemo(
+    () => (original: number, optional: number) => {
+      if (account) {
+        return optional;
+      }
+      return original;
+    },
+    []
+  );
+
   return (
-    <DashboardContent sx={{ justifyContent: 'center' }}>
+    <DashboardContent sx={{ justifyContent: 'center', pt: 10 }}>
       <Box
         sx={{
           width: '100%',
@@ -90,10 +106,43 @@ const HomeHero = () => {
               />
             </Box>
           </Grid>
+
           <Grid item xs={12} sm={6} md={3.5} lg={4}>
-            <Box sx={{ p: { xs: 2.5, md: 4 } }}>
-              <JwtSignInView showLess></JwtSignInView>
-            </Box>
+            {loadingAccount ? (
+              <LoadingScreen></LoadingScreen>
+            ) : (
+              <Box sx={{ p: { xs: 2.5, md: 4 } }}>
+                {account ? (
+                  <Box>
+                    <Typography variant="h5" fontWeight="bold" gutterBottom>
+                      Welcome to Fate OS
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 2 }}>
+                      You now have access to the world's first metaphysical platform that integrates
+                      the "1 to 60 numerical system" with a triangular structure of fate.
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <b>Fate OS</b> empowers you to gain instant insight into your life's
+                      trajectory—helping you plan ahead, seize turning points, and avoid misfortune.
+                      Here, destiny is not just something to be read, but something you can set,
+                      design, and program for yourself.
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      "The tube remains in hand, but the sticks are gone."
+                      <br />
+                      <i>Welcome to the new era of destiny—where your fate is in your own hands.</i>
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                      <Link href={paths.app} color="primary" underline="hover" fontWeight="bold">
+                        Go to your Destiny Portal
+                      </Link>
+                    </Typography>
+                  </Box>
+                ) : (
+                  <JwtSignInView showLess></JwtSignInView>
+                )}
+              </Box>
+            )}
             {/* <Box
               sx={{
                 display: 'flex',

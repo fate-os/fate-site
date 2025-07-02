@@ -168,8 +168,8 @@ const PrivacyPolicy: React.FC = () => {
           </List>
           <Typography variant="body1" paragraph sx={{ mt: 2 }}>
             To exercise any of your rights, contact us at:{' '}
-            <Link href="mailto:support@fateOstherapy.com" color="primary">
-              support@fateOstherapy.com
+            <Link href="mailto:contact@fate-os.com" color="primary">
+              contact@fate-os.com
             </Link>
           </Typography>
         </Box>
@@ -221,8 +221,8 @@ const PrivacyPolicy: React.FC = () => {
         </Typography>
         <Typography variant="body1">
           Contact:{' '}
-          <Link href="mailto:support@fateOstherapy.com" color="primary">
-            support@fateOstherapy.com
+          <Link href="mailto:contact@fate-os.com" color="primary">
+            contact@fate-os.com
           </Link>
         </Typography>
       </Box>

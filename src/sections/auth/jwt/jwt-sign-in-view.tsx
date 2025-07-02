@@ -83,7 +83,7 @@ export function JwtSignInView({ showLess }: JwtSignInViewProps) {
         if (data?.login?.success) {
           dispatch(accountInitialize(data?.login?.account));
           Cookies.set(ACCESS_TOKEN, data?.login?.token, { expires: 7 });
-          const href = `/`;
+          const href = `${paths.app}`;
           router.push(href);
           return;
         }

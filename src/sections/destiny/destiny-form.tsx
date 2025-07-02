@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { schemaHelper } from 'src/components/hook-form';
 import { Field, Form } from '@/components/hook-form';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, MenuItem, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { DestinyFormValues } from '@/types';
 import { useAppDispatch } from '@/store/hooks';
@@ -22,6 +22,7 @@ export const DestinySchema = zod.object({
   month: schemaHelper.date({ message: { required_error: 'Month is required!' } }),
   day: schemaHelper.date({ message: { required_error: 'Day is required!' } }),
   time: schemaHelper.date({ message: { required_error: 'Time is required!' } }),
+  gender: zod.string().min(1, { message: 'Gender is required!' }),
 });
 // .refine((data) => !fIsAfter(data.createDate, data.dueDate), {
 //   message: 'Due date cannot be earlier than create date!',
@@ -35,6 +36,7 @@ const DestinyForm = (props: Props) => {
       month: null,
       day: null,
       time: null,
+      gender: '',
     }),
     []
   );
@@ -140,6 +142,13 @@ const DestinyForm = (props: Props) => {
               format={null}
               disabled={!yearValue}
             />
+            <Field.Select fullWidth name="gender" label="Gender" disabled={!yearValue}>
+              {['male', 'female'].map((option) => (
+                <MenuItem key={option} value={option} sx={{ textTransform: 'capitalize' }}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Field.Select>
 
             <Button
               fullWidth

@@ -34,8 +34,8 @@ const LINKS = [
     headline: 'Contact',
     children: [
       {
-        name: 'support@fateOstherapy.com',
-        href: 'mailto:support@fateOstherapy.com?subject=[Contact]',
+        name: 'contact@fate-os.com',
+        href: 'mailto:contact@fate-os.com?subject=[Contact]',
       },
     ],
   },
@@ -84,7 +84,8 @@ export function Footer({ layoutQuery, sx }) {
                 [theme.breakpoints.up(layoutQuery)]: { mx: 'unset' },
               }}
             >
-              A Visual Tool for Emotional Growth and Healing
+              The world's first metaphysical platform empowering you to understand and design your
+              own destiny.
             </Typography>
           </Grid>
 

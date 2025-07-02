@@ -88,7 +88,7 @@ export function JwtSignUpView() {
         dispatch(accountInitialize(data?.register?.account));
         Cookies.set(ACCESS_TOKEN, data?.register?.token, { expires: 7 });
 
-        router.push('/');
+        router.push(`${paths.app}`);
 
         return;
       }

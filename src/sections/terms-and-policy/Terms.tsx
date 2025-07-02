@@ -317,8 +317,8 @@ const TermsAndConditions: React.FC = () => {
           </Typography>
           <Typography variant="body1">
             Email:{' '}
-            <Link href="mailto:support@fateOstherapy.com" color="primary">
-              support@fateOstherapy.com
+            <Link href="mailto:contact@fate-os.com" color="primary">
+              contact@fate-os.com
             </Link>
           </Typography>
         </Box>

@@ -89,21 +89,18 @@ function App() {
   }));
 
   const router = useRouter();
-  const theme = useTheme();
-  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleToNextPage = (num: number) => {
     router.push(`/payment/${num}`);
   };
 
-  // Responsive SVG dimensions
-  const svgWidth = isSmDown ? 600 : isMdDown ? 700 : 800;
-  const svgHeight = isSmDown ? 800 : isMdDown ? 900 : 1000;
+  // SVG dimensions and vertical oval parameters
+  const svgWidth = 800;
+  const svgHeight = 1000;
   const centerX = svgWidth / 2;
   const centerY = svgHeight / 2;
-  const ovalRadiusX = isSmDown ? 110 : isMdDown ? 130 : 150;
-  const ovalRadiusY = isSmDown ? 180 : isMdDown ? 230 : 280;
+  const ovalRadiusX = 150; // Narrower for vertical orientation
+  const ovalRadiusY = 280; // Taller for vertical orientation
   const yearRadius = ovalRadiusX + 40;
   const amountRadius = ovalRadiusX + 100;
 
@@ -151,47 +148,31 @@ function App() {
     <Box
       sx={{
         minHeight: '100vh',
+
         py: 4,
-        maxWidth: '100vw',
-        overflowX: 'hidden',
       }}
     >
-      <Container maxWidth="lg" sx={{ maxWidth: '100vw', px: { xs: 0, sm: 2 } }}>
+      <Container maxWidth="lg">
         <Box textAlign="center" mb={4}>
           <Typography variant="h3" component="h1" gutterBottom>
-            Annual Investment Journey
+            Investment Growth Timeline
           </Typography>
           <Typography variant="h6" component="p" sx={{ maxWidth: 600, mx: 'auto' }}>
-            Visualize your yearly contributions and growth from year 1 to year 60.
+            A comprehensive vertical view of annual contributions from $100 in year 1 to $6,000 in
+            year 60
           </Typography>
         </Box>
 
-        {/* Responsive scrollable SVG container */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          mb={4}
-          sx={{
-            width: '100%',
-            overflowX: 'auto',
-            WebkitOverflowScrolling: 'touch',
-            px: isSmDown ? 1 : 0,
-            maxWidth: '100vw',
-          }}
-        >
+        <Box display="flex" justifyContent="center" mb={4}>
           <Paper
             elevation={0}
             sx={{
+              borderRadius: 3,
+              p: 3,
               overflow: 'auto',
-              boxShadow: 'none',
             }}
           >
-            <svg
-              width="100%"
-              height={svgHeight}
-              viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-              style={{ minWidth: svgWidth, maxWidth: '100%', height: 'auto', display: 'block' }}
-            >
+            <svg width={svgWidth} height={svgHeight} style={{ maxWidth: '100%', height: 'auto' }}>
               {/* Gradient and shadow definitions */}
               <defs>
                 <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -219,11 +200,7 @@ function App() {
 
               {/* Data points */}
               {positions.map((point, index) => (
-                <g
-                  key={index}
-                  onClick={() => handleToNextPage(point.year)}
-                  style={{ cursor: 'pointer' }}
-                >
+                <g key={index} onClick={() => handleToNextPage(point.year)}>
                   {/* Connection line from oval to amount */}
                   <line
                     x1={point.ovalX}

@@ -49,7 +49,8 @@ export function MainLayout({ sx, data, children }) {
             }}
             slotsDisplay={{
               account: account ? true : loadingAccount ? false : false,
-              signIn: false,
+              signIn: account ? true : loadingAccount ? false : false,
+              localization: false,
               helpLink: false,
               contacts: false,
               searchbar: false,

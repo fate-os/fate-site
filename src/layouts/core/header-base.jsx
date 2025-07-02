@@ -1,12 +1,9 @@
 'use client';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+
 import Button from '@mui/material/Button';
 import { styled, useTheme } from '@mui/material/styles';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
 
 import { Logo } from 'src/components/logo';
 
@@ -15,9 +12,8 @@ import { HeaderSection } from './header-section';
 import { MenuButton } from '../components/menu-button';
 import { SignInButton } from '../components/sign-in-button';
 import { AccountDrawer } from '../components/account-drawer';
-import { SettingsButton } from '../components/settings-button';
 import { LanguagePopover } from '../components/language-popover';
-import { ContactsPopover } from '../components/contacts-popover';
+
 import { WorkspacesPopover } from '../components/workspaces-popover';
 
 // ----------------------------------------------------------------------
@@ -60,16 +56,9 @@ export function HeaderBase({
   slotsDisplay: {
     signIn = true,
     account = true,
-    helpLink = true,
-    settings = true,
-    purchase = true,
-    contacts = true,
-    searchbar = true,
     workspaces = true,
     menuButton = true,
     localization = true,
-    notifications = true,
-    upgrade = true,
   } = {},
 
   ...other
@@ -126,40 +115,11 @@ export function HeaderBase({
             >
               {/* -- Language popover -- */}
               {localization && <LanguagePopover data-slot="localization" data={data?.langs} />}
-
-              {/* -- Notifications popover -- */}
-              {/* {notifications && (
-                <NotificationsDrawer data-slot="notifications" data={data?.notifications} />
-              )} */}
-
-              {/* -- Contacts popover -- */}
-              {/* {contacts && <ContactsPopover data-slot="contacts" data={data?.contacts} />} */}
-              {/* {settings && <SettingsButton data-slot="settings" />} */}
-
-              {/* -- Account drawer -- */}
-              {account && <AccountDrawer data-slot="account" data={data?.account} />}
-
               {/* -- Log in button -- */}
               {signIn && <SignInButton />}
 
-              {/* -- Purchase button -- */}
-              {purchase && (
-                <Button
-                  data-slot="purchase"
-                  variant="contained"
-                  rel="noopener"
-                  target="_blank"
-                  href={paths.plans}
-                  sx={{
-                    display: 'none',
-                    [theme.breakpoints.up(layoutQuery)]: {
-                      display: 'inline-flex',
-                    },
-                  }}
-                >
-                  Purchase
-                </Button>
-              )}
+              {/* -- Account drawer -- */}
+              {account && <AccountDrawer data-slot="account" data={data?.account} />}
             </Box>
 
             {slots?.rightAreaEnd}
