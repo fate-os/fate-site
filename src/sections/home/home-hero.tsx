@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -16,20 +18,10 @@ const HomeHero = () => {
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { account, loadingAccount } = useAppSelector((s) => s.auth);
-
-  const getSize = useMemo(
-    () => (original: number, optional: number) => {
-      if (account) {
-        return optional;
-      }
-      return original;
-    },
-    []
-  );
+  const { account } = useAppSelector((s) => s.auth);
 
   return (
-    <DashboardContent sx={{ justifyContent: 'center', pt: 10 }}>
+    <DashboardContent sx={{ justifyContent: 'center', py: 20 }}>
       <Box
         sx={{
           width: '100%',
@@ -107,7 +99,7 @@ const HomeHero = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3.5} lg={4}>
+          {/* <Grid item xs={12} sm={6} md={3.5} lg={4}>
             {loadingAccount ? (
               <LoadingScreen></LoadingScreen>
             ) : (
@@ -143,17 +135,8 @@ const HomeHero = () => {
                 )}
               </Box>
             )}
-            {/* <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-              }}
-            >
-              <SignInButton sx={{}}></SignInButton>
-            </Box> */}
-          </Grid>
+       
+          </Grid> */}
         </Grid>
       </Box>
     </DashboardContent>

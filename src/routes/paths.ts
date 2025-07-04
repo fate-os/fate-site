@@ -7,6 +7,7 @@ const ROOTS = {
 
 export const paths = {
   app: ROOTS.APP,
+  portal: `${ROOTS.APP}/portal`,
   payment: '/payment',
   page403: '/error/403',
   page404: '/error/404',

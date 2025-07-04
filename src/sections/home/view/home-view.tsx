@@ -11,7 +11,6 @@ export function HomeView() {
   return (
     <>
       <Stack spacing={15}>
-        <HomeHero />
         <AboutUs />
       </Stack>
 

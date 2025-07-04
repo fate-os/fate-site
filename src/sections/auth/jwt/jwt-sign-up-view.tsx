@@ -109,7 +109,7 @@ export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
-      <Typography variant="h5">Get started absolutely free</Typography>
+      <Typography variant="h5">Get started!</Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
