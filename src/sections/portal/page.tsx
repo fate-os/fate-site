@@ -150,10 +150,10 @@ function App() {
       <Container maxWidth="lg" sx={{ maxWidth: '100vw', px: { xs: 0, sm: 2 } }}>
         <Box textAlign="center" mb={4}>
           <Typography variant="h3" component="h1" gutterBottom>
-            Annual Investment Journey
+            Discover the Trajectory of Life
           </Typography>
           <Typography variant="h6" component="p" sx={{ maxWidth: 600, mx: 'auto' }}>
-            Visualize your yearly contributions and growth from year 1 to year 60.
+            Clearly visualize your growth trajectory from year 1 to year 60
           </Typography>
         </Box>
 
