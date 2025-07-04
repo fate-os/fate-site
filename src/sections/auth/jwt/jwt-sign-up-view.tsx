@@ -48,7 +48,11 @@ export const SignUpSchema = zod.object({
 
 // ----------------------------------------------------------------------
 
-export function JwtSignUpView() {
+type JwtSignUpViewProps = {
+  showLess?: boolean;
+};
+
+export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
   const { account } = useAppSelector((s) => s.auth);
 
   const router = useRouter();
@@ -127,16 +131,17 @@ export function JwtSignUpView() {
   const renderForm = (
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Field.Text name="first_name" label="First name" />
-        <Field.Text name="last_name" label="Last name" />
+        <Field.Text name="first_name" label="First name" size={showLess ? 'small' : 'large'} />
+        <Field.Text name="last_name" label="Last name" size={showLess ? 'small' : 'large'} />
       </Stack>
 
-      <Field.Text name="email" label="Email address" />
+      <Field.Text name="email" label="Email address" size={showLess ? 'small' : 'large'} />
 
       <Field.Text
         name="password"
         label="Password"
         placeholder="6+ characters"
+        size={showLess ? 'small' : 'large'}
         type={password.value ? 'text' : 'password'}
         InputProps={{
           endAdornment: (
@@ -153,9 +158,9 @@ export function JwtSignUpView() {
       <LoadingButton
         fullWidth
         color="inherit"
-        size="large"
         type="submit"
         variant="outlined"
+        size={showLess ? 'small' : 'large'}
         loading={isSubmitting || loading}
       >
         Continue

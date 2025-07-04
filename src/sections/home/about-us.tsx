@@ -56,12 +56,10 @@ const AboutUs = () => {
                   <Typography>
                     <b>Fate OS Inc.</b> is the world's first metaphysical platform to integrate a{' '}
                     <b>"1 to 60 numerical system"</b> <br /> with a{' '}
-                    <b>triangular structure of fate</b>.
-                    <br />
-                    Within a few minutes, users can gain insight into whether they are in a
-                    favorable or unfavorable life phase—and grasp the overall trajectory of their
-                    destiny—empowering them to plan ahead, seize turning points, and avoid
-                    misfortune.
+                    <b>triangular structure of fate</b>. Within a few minutes, users can gain
+                    insight into whether they are in a favorable or unfavorable life phase—and grasp
+                    the overall trajectory of their destiny—empowering them to plan ahead, seize
+                    turning points, and avoid misfortune.
                   </Typography>
 
                   <Typography>
@@ -166,7 +164,7 @@ const AboutUs = () => {
               </Grid2>
               <Grid2 size={{ xs: 12, md: 4 }}>
                 <Box sx={{ mt: { xs: 0, md: 10 } }}>
-                  <JwtSignUpView></JwtSignUpView>
+                  <JwtSignUpView showLess></JwtSignUpView>
                 </Box>
               </Grid2>
             </Grid2>
