@@ -99,8 +99,8 @@ const AboutUs = () => {
 
               <Box px={2} py={2} bgcolor={(theme) => theme.palette.grey[100]} borderRadius={2}>
                 <Typography variant="subtitle1" fontStyle="italic" gutterBottom>
-                  The most revealing line in the 59th prophecy of Tui Bei Tu, one of China's most
-                  well-known ancient prophetic texts, is this Ode:
+                  Around 1,300 years ago: The most revealing line in the 59th prophecy of Tui Bei
+                  Tu, one of China's most well-known ancient prophetic texts, is this Ode:
                 </Typography>
                 <Typography variant="h6" fontWeight="bold" fontStyle="italic" gutterBottom>
                   "Holding the lot-drawing tube, the bamboo sticks are removed."
