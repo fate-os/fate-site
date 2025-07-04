@@ -26,7 +26,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import { REGISTER_ACCOUNT } from '@/graphql/mutation/AuthMutation';
 import { useMutation } from '@apollo/client';
 // import TermsAcceptance from '@/sections/terms-and-policy/TermsAcceptance';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { accountInitialize } from '@/store/features/auth.reducer';
 import Cookies from 'js-cookie';
 import { ACCESS_TOKEN } from '@/config-global';
@@ -49,7 +49,7 @@ export const SignUpSchema = zod.object({
 // ----------------------------------------------------------------------
 
 export function JwtSignUpView() {
-  const { checkUserSession } = useAuthContext();
+  const { account } = useAppSelector((s) => s.auth);
 
   const router = useRouter();
 
@@ -79,6 +79,11 @@ export function JwtSignUpView() {
 
   const onSubmit = handleSubmit(async (signupdata) => {
     try {
+      if (account) {
+        router.push(`${paths.app}`);
+        return;
+      }
+
       setErrorMsg('');
       const { data } = await signup({
         variables: { input: { ...signupdata, provider: 'EMAIL' } },
