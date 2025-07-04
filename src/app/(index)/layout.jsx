@@ -6,7 +6,7 @@ import { MainLayout } from 'src/layouts/main';
 export default function Layout({ children }) {
   return (
     <MainLayout>
-      <>{children}</>
+      <GuestGuard>{children}</GuestGuard>
     </MainLayout>
   );
 }
