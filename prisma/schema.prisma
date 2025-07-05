@@ -15,25 +15,26 @@ datasource db {
 }
 
 model user {
-  id                         String    @id @default(uuid())
+  id                         String            @id @default(uuid())
   first_name                 String
   last_name                  String
   password                   String?
-  email                      String    @unique
+  email                      String            @unique
   photo_url                  String?
   birthday                   DateTime?
-  country_name               String?   @db.Text
-  phone_number               String?   @db.Text
-  zip_code                   String?   @db.Text
+  country_name               String?           @db.Text
+  phone_number               String?           @db.Text
+  zip_code                   String?           @db.Text
   reset_password_pin         Int?
   reset_password_expire_date DateTime?
   verify_pin                 Int?
   verify_pin_expire_date     DateTime?
-  verify_status              Boolean   @default(false)
-  super_admin                Boolean?  @default(false)
-  created_at                 DateTime? @default(now())
-  updated_at                 DateTime? @updatedAt
+  verify_status              Boolean           @default(false)
+  super_admin                Boolean?          @default(false)
+  created_at                 DateTime?         @default(now())
+  updated_at                 DateTime?         @updatedAt
   last_login_at              DateTime?
+  payment_history            payment_history[]
 }
 
 model media {
@@ -45,13 +46,56 @@ model media {
   created_at DateTime? @default(now())
 }
 
-enum AccountProvider {
-  EMAIL
-  GOOGLE
+model payment_history {
+  id                String     @id @default(uuid())
+  stripe_payment_id String?
+  stripe_session_id String?
+  year_count        Int
+  user              user       @relation(fields: [user_id], references: [id])
+  user_id           String
+  created_at        DateTime?  @default(now())
+  updated_at        DateTime?  @updatedAt
+  fate_quote        fate_quote @relation(fields: [fate_quote_id], references: [id])
+  fate_quote_id     String
 }
 
-enum UserAccountType {
-  SUPER_ADMIN
-  ADMIN
-  USER
+model fate_quote {
+  id                 String            @id @default(uuid())
+  year_count         Int
+  date               DateTime
+  gender             String?
+  quote_parameters   quote_parameter   @relation(fields: [quote_parameter_id], references: [id])
+  quote_parameter_id String
+  created_at         DateTime?         @default(now())
+  updated_at         DateTime?         @updatedAt
+  payment_history    payment_history[]
 }
+
+model quote_parameter {
+  id                  String       @id @default(uuid())
+  straight_left       Direction?
+  straight_right      Direction?
+  top_number          Int?
+  right_side_number   Int?
+  bottom_right_number Int?
+  bottom_left_number  Int?
+  left_side_number    Int?
+  right_side_arrow    Direction?
+  left_side_arrow     Direction?
+  bottom_arrow        Direction?
+  created_at          DateTime?    @default(now())
+  updated_at          DateTime?    @updatedAt
+  fate_quotes         fate_quote[]
+}
+
+enum Direction {
+  up
+  down
+  left
+  right
+}
+
+// enum AccountProvider {
+//   EMAIL
+//   GOOGLE
+// }

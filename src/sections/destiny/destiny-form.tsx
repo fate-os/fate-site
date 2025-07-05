@@ -9,11 +9,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { schemaHelper } from 'src/components/hook-form';
 import { Field, Form } from '@/components/hook-form';
-import { Box, Button, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, Button, MenuItem, Stack, Typography, Alert } from '@mui/material';
 import dayjs from 'dayjs';
 import { DestinyFormValues } from '@/types';
-import { useAppDispatch } from '@/store/hooks';
-import { destinyFormInit } from '@/store/features/app.reducer';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { destinyFormInit, setFateQuoteResult } from '@/store/features/app.reducer';
+import { useLazyQuery } from '@apollo/client';
+import { GET_FATE_QUOTE } from '@/graphql/query/FateQuote';
+import { FateQuoteResponse } from '@/types';
+import moment from 'moment';
 
 type Props = {};
 
@@ -41,6 +45,12 @@ const DestinyForm = (props: Props) => {
     []
   );
 
+  const [getFateQuote, { loading: queryLoading, error: queryError }] =
+    useLazyQuery<FateQuoteResponse>(GET_FATE_QUOTE, {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'all',
+    });
+
   const methods = useForm<DestinyFormValues>({
     mode: 'all',
     resolver: zodResolver(DestinySchema),
@@ -48,6 +58,7 @@ const DestinyForm = (props: Props) => {
   });
 
   const dispatch = useAppDispatch();
+  const { destinyForm, fateQuoteResult } = useAppSelector((state) => state.app);
 
   const {
     reset,
@@ -57,18 +68,21 @@ const DestinyForm = (props: Props) => {
     control,
   } = methods;
 
+  // Check if form has been submitted and has results
+  const hasSubmittedForm = destinyForm;
+
   // Watch the year, month, and day fields
   const yearValue = useWatch({ control, name: 'year' });
   const monthValue = useWatch({ control, name: 'month' });
   const dayValue = useWatch({ control, name: 'day' });
 
-  // When year changes, set month, day, and time to Jan 1, 00:00 of that year
+  // When year changes, set month and day to Jan 1 of that year
   React.useEffect(() => {
     if (yearValue) {
       const date = dayjs(yearValue).startOf('year');
       setValue('month', date.toISOString());
       setValue('day', date.toISOString());
-      setValue('time', date.toISOString());
+      // Don't auto-set time - let user select it
     } else {
       setValue('month', null);
       setValue('day', null);
@@ -76,40 +90,80 @@ const DestinyForm = (props: Props) => {
     }
   }, [yearValue, setValue]);
 
-  // When month changes, set day and time to the first day of that month at 00:00
+  // When month changes, set day to the first day of that month
   React.useEffect(() => {
     if (yearValue && monthValue) {
       // monthValue is an ISO string, get the year and month from it
       const date = dayjs(monthValue).startOf('month');
       setValue('day', date.toISOString());
-      setValue('time', date.toISOString());
+      // Don't auto-set time - let user select it
     }
   }, [monthValue, yearValue, setValue]);
 
-  // When day changes, set time to the start of that day (00:00)
-  React.useEffect(() => {
-    if (yearValue && monthValue && dayValue) {
-      const date = dayjs(dayValue).startOf('day');
-      setValue('time', date.toISOString());
-    }
-  }, [dayValue, yearValue, monthValue, setValue]);
+  // When day changes, don't auto-set time - let user select it
+  // Removed the useEffect that was setting time to start of day
 
-  const handleCreateAndSend = handleSubmit(async (data) => {
+  const handleConfirm = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // reset();
-      dispatch(destinyFormInit(data));
+      // Combine the selected day with the selected time in UTC using moment.js
+      let combinedDate;
+      if (data.day && data.time) {
+        // Get the date part from day and time part from time
+        const dayDate = moment(data.day);
+        const timeDate = moment(data.time);
+
+        // Combine them in UTC: use day's date with time's time
+        combinedDate = moment.utc([
+          dayDate.year(),
+          dayDate.month(),
+          dayDate.date(),
+          timeDate.hour(),
+          timeDate.minute(),
+          timeDate.second(),
+          timeDate.millisecond(),
+        ]);
+      } else {
+        // Fallback to just the time if day is not available
+        combinedDate = moment.utc(data.time);
+      }
+
+      const formattedDate = combinedDate.toISOString();
+
+      // Call the GraphQL query
+      const { data: queryData } = await getFateQuote({
+        variables: {
+          date: formattedDate,
+          gender: data.gender,
+        },
+      });
+
+      // If successful, dispatch the result
+      if (queryData?.getFateQuote.success && queryData.getFateQuote.result) {
+        // Dispatch the form data
+        dispatch(destinyFormInit(data));
+        dispatch(setFateQuoteResult(queryData.getFateQuote.result));
+        console.log(queryData.getFateQuote.result);
+      }
     } catch (error) {
       console.error(error);
     }
   });
+
+  const handleReset = () => {
+    // Reset the form to default values
+    reset(defaultValues);
+
+    // Clear the Redux state
+    dispatch(destinyFormInit(null));
+    dispatch(setFateQuoteResult(null));
+  };
 
   return (
     <Box>
       <Stack spacing={4}>
         <Typography variant="h5">Please provide your information</Typography>
 
-        <Form methods={methods} onSubmit={handleCreateAndSend}>
+        <Form methods={methods} onSubmit={handleConfirm}>
           <Stack spacing={4}>
             <Field.DatePicker
               name="year"
@@ -150,13 +204,27 @@ const DestinyForm = (props: Props) => {
               ))}
             </Field.Select>
 
+            {queryError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {queryError.message}
+              </Alert>
+            )}
+
+            {hasSubmittedForm && (
+              <Box>
+                <Button size="small" variant="text" onClick={handleReset} sx={{ mb: 2 }}>
+                  Reset
+                </Button>
+              </Box>
+            )}
+
             <Button
               fullWidth
               color="primary"
               type="submit"
               size="large"
               variant="contained"
-              loading={isSubmitting}
+              loading={isSubmitting || queryLoading}
             >
               Confirm
             </Button>

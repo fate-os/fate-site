@@ -87,4 +87,37 @@ export type DestinyFormValues = {
   month: string | null;
   day: string | null;
   time: string | null;
+  gender: string;
 };
+
+export interface FateQuoteResponse {
+  getFateQuote: {
+    success: boolean;
+    message: string;
+    result: FateQuoteResult | null;
+  };
+}
+
+export interface FateQuoteResult {
+  id: string;
+  year_count: number;
+  date: string;
+  gender: string;
+  quote_parameters: QuoteParameter;
+}
+
+export type Directions = 'up' | 'down' | 'left' | 'right';
+
+export interface QuoteParameter {
+  id: string;
+  straight_left: Directions;
+  straight_right: Directions;
+  top_number: number;
+  right_side_number: number;
+  bottom_right_number: number;
+  bottom_left_number: number;
+  left_side_number: number;
+  right_side_arrow: Directions;
+  left_side_arrow: Directions;
+  bottom_arrow: Directions;
+}
