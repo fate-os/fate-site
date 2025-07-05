@@ -10,8 +10,8 @@ const prismaClient = new PrismaClient();
 
 const seedQuote = async () => {
   try {
-    await prismaClient.fate_quote.deleteMany()
-    await prismaClient.quote_parameter.deleteMany()
+    // await prismaClient.fate_quote.deleteMany()
+    // await prismaClient.quote_parameter.deleteMany()
     // First, create the quote parameters
     const quoteParam1 = await prismaClient.quote_parameter.create({
       data: {

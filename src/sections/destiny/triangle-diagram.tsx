@@ -40,35 +40,39 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
   return (
     <Box style={{ position: 'relative' }}>
       {/* Straight arrows in center using Iconify */}
-      <Stack
-        justifyContent={'center'}
-        direction={'row'}
-        alignItems={'center'}
-        minHeight={300}
-        spacing={5}
-      >
-        {/* Straight Left Arrow */}
-        {straightLeft && (
-          <Iconify
-            icon={straightLeft === 'up' ? 'heroicons:arrow-up-solid' : 'heroicons:arrow-down-solid'}
-            width={70}
-            height={70}
-            color={theme.palette.primary.main}
-          />
-        )}
+      {(straightLeft || straightLeft) && (
+        <Stack
+          justifyContent={'center'}
+          direction={'row'}
+          alignItems={'center'}
+          minHeight={300}
+          spacing={5}
+        >
+          {/* Straight Left Arrow */}
+          {straightLeft && (
+            <Iconify
+              icon={
+                straightLeft === 'up' ? 'heroicons:arrow-up-solid' : 'heroicons:arrow-down-solid'
+              }
+              width={70}
+              height={70}
+              color={theme.palette.primary.main}
+            />
+          )}
 
-        {/* Straight Right Arrow */}
-        {straightRight && (
-          <Iconify
-            icon={
-              straightRight === 'up' ? 'heroicons:arrow-up-solid' : 'heroicons:arrow-down-solid'
-            }
-            width={70}
-            height={70}
-            color={theme.palette.primary.main}
-          />
-        )}
-      </Stack>
+          {/* Straight Right Arrow */}
+          {straightRight && (
+            <Iconify
+              icon={
+                straightRight === 'up' ? 'heroicons:arrow-up-solid' : 'heroicons:arrow-down-solid'
+              }
+              width={70}
+              height={70}
+              color={theme.palette.primary.main}
+            />
+          )}
+        </Stack>
+      )}
 
       {(!straightLeft || !straightLeft) && (
         <Box>
