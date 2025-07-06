@@ -183,7 +183,7 @@ const checkUserPurchase = async (
     }
 
     // Calculate the expected amount based on years and shine
-    const expectedAmount = shine ? 60 * 100 : years * 100;
+    const expectedAmount = shine ? 45 * 100 : years * 100;
 
     // Find payment history for this user with matching amount and shine logic
     const paymentHistory = await FateOsClient.payment_history.findFirst({
