@@ -4,6 +4,7 @@ import { SessionArg, VerifyPaymentArg } from '../../types/req';
 import { FateOsClient } from '@/db/prisma';
 import { stripe } from '@/db/stripe';
 import { CONFIG } from '@/config-global';
+import Stripe from 'stripe';
 
 const YOUR_DOMAIN = CONFIG.site.assetURL;
 
@@ -33,24 +34,17 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
       };
     }
 
-    const findFateQuote = await FateOsClient.quote_parameter.findFirst({
-      select: {
-        id: true,
-      },
-      where: { shine: shine ? 'up' : undefined },
-    });
-
-    // if (!subResult) {
-    //   return {
-    //     success: false,
-    //     message: "Unable to find subscription",
-    //   };
-    // }
+    // const findFateQuote = await FateOsClient.quote_parameter.findFirst({
+    //   select: {
+    //     id: true,
+    //   },
+    //   where: { shine: shine ? 'up' : undefined },
+    // });
 
     const priceId = await stripe.prices.create({
       currency: 'usd',
       unit_amount: years * 100 * 100,
-      product_data: { name: `${years} years` },
+      product_data: { name: shine ? 'Change fate' : `${years} years` },
     });
 
     const session = await stripe.checkout.sessions.create({
@@ -68,7 +62,8 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
       metadata: {
         user_id: cont?.account?.account.id,
         session_id: '{CHECKOUT_SESSION_ID}',
-        years,
+        years: shine ? 60 : years,
+        shine: shine ? 'shine' : '',
       },
     });
     return {
@@ -111,7 +106,51 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
       expand: ['payment_intent'],
     });
 
-    console.log(session);
+    if (!session) {
+      return {
+        success: false,
+        message: 'False',
+        result: {
+          status: 'fail',
+        },
+      };
+    }
+
+    const metadata = session.metadata;
+
+    // Check if payment history already exists for this session
+    const existingHistory = await FateOsClient.payment_history.findFirst({
+      where: {
+        stripe_session_id: session.id,
+      },
+    });
+
+    let createHistory;
+
+    if (!existingHistory) {
+      // Create payment history only if it doesn't exist
+      createHistory = await FateOsClient.payment_history.create({
+        data: {
+          user_id: metadata?.user_id as string,
+          paid_amount: (session.payment_intent as Stripe.PaymentIntent).amount_received / 100,
+          year_count: Number(metadata?.years),
+          stripe_session_id: session.id,
+        },
+      });
+    } else {
+      // Use existing history if found
+      createHistory = existingHistory;
+    }
+
+    if (!createHistory) {
+      return {
+        success: false,
+        message: 'False',
+        result: {
+          status: 'error',
+        },
+      };
+    }
 
     return {
       success: true,
@@ -119,7 +158,66 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
       result: {
         status: session.payment_status,
         amount: session?.amount_total ? session?.amount_total / 100 : 0,
-        currency: session.currency,
+        history_id: createHistory.id,
+      },
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw new GraphQLError(error.message);
+  }
+};
+
+const checkUserPurchase = async (
+  _: any,
+  arg: { years: number; shine: boolean },
+  cont: AppContext
+) => {
+  try {
+    const { years, shine } = arg;
+
+    if (!cont.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, try again',
+      };
+    }
+
+    // Calculate the expected amount based on years and shine
+    const expectedAmount = shine ? 60 * 100 : years * 100;
+
+    // Find payment history for this user with matching amount and shine logic
+    const paymentHistory = await FateOsClient.payment_history.findFirst({
+      where: {
+        user_id: cont.account.account.id,
+        paid_amount: expectedAmount,
+        year_count: shine ? 60 : years,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    if (paymentHistory) {
+      return {
+        success: true,
+        message: 'User has purchased this package',
+        result: {
+          has_purchased: true,
+          history_id: paymentHistory.id,
+          paid_amount: paymentHistory.paid_amount,
+          year_count: paymentHistory.year_count,
+        },
+      };
+    }
+
+    return {
+      success: true,
+      message: 'User has not purchased this package',
+      result: {
+        has_purchased: false,
+        history_id: null,
+        paid_amount: 0,
+        year_count: 0,
       },
     };
   } catch (error: any) {
@@ -132,6 +230,7 @@ const resolver = {
   Query: {
     createSession: createSessionForSubscription,
     verifyPayment: verifyPaymentBySession,
+    checkUserPurchase,
   },
 };
 

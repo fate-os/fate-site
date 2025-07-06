@@ -48,7 +48,7 @@ CREATE TABLE "payment_history" (
     "user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
-    "fate_quote_id" TEXT NOT NULL,
+    "fate_quote_id" TEXT,
 
     CONSTRAINT "payment_history_pkey" PRIMARY KEY ("id")
 );
@@ -94,7 +94,7 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 ALTER TABLE "payment_history" ADD CONSTRAINT "payment_history_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "payment_history" ADD CONSTRAINT "payment_history_fate_quote_id_fkey" FOREIGN KEY ("fate_quote_id") REFERENCES "fate_quote"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "payment_history" ADD CONSTRAINT "payment_history_fate_quote_id_fkey" FOREIGN KEY ("fate_quote_id") REFERENCES "fate_quote"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "fate_quote" ADD CONSTRAINT "fate_quote_quote_parameter_id_fkey" FOREIGN KEY ("quote_parameter_id") REFERENCES "quote_parameter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

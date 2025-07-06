@@ -10,7 +10,7 @@ import { PaymentMethods } from '../payment-methods';
 
 // ----------------------------------------------------------------------
 
-export function PaymentView({ years }) {
+export function PaymentView({ years, isShine }) {
   return (
     <Container sx={{ pt: 5, pb: 10 }}>
       <Typography variant="h3" align="center" sx={{ mb: 2 }}>
@@ -37,7 +37,7 @@ export function PaymentView({ years }) {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <PaymentSummary years={years} />
+          <PaymentSummary years={years} isShine={isShine} />
         </Grid>
       </Grid>
     </Container>

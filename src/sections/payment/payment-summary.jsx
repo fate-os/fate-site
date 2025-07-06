@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
-export function PaymentSummary({ years, sx, ...other }) {
+export function PaymentSummary({ years, isShine, sx, ...other }) {
   const [continuePayment, setContinuePayment] = useState(0);
 
   const totalAmount = years * 100;
@@ -88,6 +88,7 @@ export function PaymentSummary({ years, sx, ...other }) {
           open={Boolean(continuePayment)}
           onClose={() => setContinuePayment('')}
           years={continuePayment}
+          isShine={isShine}
         ></PaymentDialog>
       )}
     </Box>

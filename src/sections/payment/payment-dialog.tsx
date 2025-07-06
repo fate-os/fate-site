@@ -24,12 +24,14 @@ type PaymentDialogProps = {
   onClose: () => void;
   open: boolean;
   years: string;
+  isShine: boolean;
 };
 
-export function PaymentDialog({ onClose, open, years }: PaymentDialogProps) {
+export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogProps) {
   const [getSession, { loading }] = useLazyQuery<SubscriptionSessionResponse>(GET_STRIPE_SESSION, {
     variables: {
       years: Number(years),
+      shine: isShine,
     },
   });
 

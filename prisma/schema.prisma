@@ -47,17 +47,17 @@ model media {
 }
 
 model payment_history {
-  id                String     @id @default(uuid())
+  id                String      @id @default(uuid())
   stripe_payment_id String?
   stripe_session_id String?
   paid_amount       Float
   year_count        Int
-  user              user       @relation(fields: [user_id], references: [id])
+  user              user        @relation(fields: [user_id], references: [id])
   user_id           String
-  created_at        DateTime?  @default(now())
-  updated_at        DateTime?  @updatedAt
-  fate_quote        fate_quote @relation(fields: [fate_quote_id], references: [id])
-  fate_quote_id     String
+  created_at        DateTime?   @default(now())
+  updated_at        DateTime?   @updatedAt
+  fate_quote        fate_quote? @relation(fields: [fate_quote_id], references: [id])
+  fate_quote_id     String?
 }
 
 model fate_quote {
@@ -65,7 +65,7 @@ model fate_quote {
   year_count         Int
   date               DateTime
   gender             String?
-  quote_parameters   quote_parameter   @relation(fields: [quote_parameter_id], references: [id])
+  quote_parameter    quote_parameter   @relation(fields: [quote_parameter_id], references: [id])
   quote_parameter_id String
   created_at         DateTime?         @default(now())
   updated_at         DateTime?         @updatedAt

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_STRIPE_SESSION = gql`
-  query CreateSession($years: Int) {
-    createSession(years: $years) {
+  query CreateSession($years: Int, $shine: Boolean) {
+    createSession(years: $years, shine: $shine) {
       success
       result
       message
@@ -17,7 +17,22 @@ export const VERIFY_PAYMENT = gql`
       result {
         status
         amount
-        currency
+        history_id
+      }
+    }
+  }
+`;
+
+export const CHECK_USER_PURCHASE = gql`
+  query CheckUserPurchase($years: Int, $shine: Boolean) {
+    checkUserPurchase(years: $years, shine: $shine) {
+      success
+      message
+      result {
+        has_purchased
+        history_id
+        paid_amount
+        year_count
       }
     }
   }

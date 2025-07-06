@@ -9,11 +9,11 @@ import { Box, Button, Container, Stack } from '@mui/material';
 import { paths } from '@/routes/paths';
 import { VerifyPaymentResult } from '@/types';
 
-const PaymentSuccess: React.FC<VerifyPaymentResult> = ({ status }) => {
+const PaymentSuccess: React.FC<VerifyPaymentResult> = ({ status, history_id }) => {
   useEffect(() => {
     if (status === 'paid') {
       setTimeout(() => {
-        window.location.href = paths.destiny;
+        window.location.href = `${paths.destiny}?history=${history_id}`;
       }, 2000);
     }
   }, [status]);

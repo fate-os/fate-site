@@ -15,16 +15,27 @@ type VerifyDetails {
 type VerifySession {
     status: String
     amount:Float
-    currency:String
+    history_id:String
 }
 
+type CheckUserPurchaseDetails {
+    success: Boolean!
+    message: String
+    result: CheckUserPurchase
+}
 
-
+type CheckUserPurchase {
+    has_purchased: Boolean!
+    history_id: String
+    paid_amount: Float
+    year_count: Int
+}
 
 type Query {
    
-    createSession(years:Int):SessionDetails
+    createSession(years:Int,shine:Boolean):SessionDetails
     verifyPayment(sessionId:String):VerifyDetails
+    checkUserPurchase(years:Int,shine:Boolean):CheckUserPurchaseDetails
 }
 
 

@@ -36,7 +36,22 @@ export interface VerifyPaymentResponse {
 export interface VerifyPaymentResult {
   status: string;
   amount: number;
-  currency: string;
+  history_id: string;
+}
+
+export interface CheckUserPurchaseResult {
+  has_purchased: boolean;
+  history_id: string | null;
+  paid_amount: number;
+  year_count: number;
+}
+
+export interface CheckUserPurchaseResponse {
+  checkUserPurchase: {
+    success: boolean;
+    message: string;
+    result: CheckUserPurchaseResult;
+  };
 }
 
 export interface SubscriptionHistory {

@@ -43,7 +43,7 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
         ...(gender && { gender }),
       },
       include: {
-        quote_parameters: true,
+        quote_parameter: true,
       },
     });
 
@@ -59,22 +59,22 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
     const result = {
       id: fateQuote.id,
       year_count: fateQuote.year_count,
-      date: fateQuote.date.toISOString(),
+      date: fateQuote?.date?.toISOString(),
       gender: fateQuote.gender,
       quote_parameters: {
-        id: fateQuote.quote_parameters.id,
-        shine: fateQuote.quote_parameters.shine,
-        straight_left: fateQuote.quote_parameters.straight_left,
-        straight_right: fateQuote.quote_parameters.straight_right,
-        straight_bottom: fateQuote.quote_parameters.straight_bottom,
-        top_number: fateQuote.quote_parameters.top_number,
-        right_side_number: fateQuote.quote_parameters.right_side_number,
-        bottom_right_number: fateQuote.quote_parameters.bottom_right_number,
-        bottom_left_number: fateQuote.quote_parameters.bottom_left_number,
-        left_side_number: fateQuote.quote_parameters.left_side_number,
-        right_side_arrow: fateQuote.quote_parameters.right_side_arrow,
-        left_side_arrow: fateQuote.quote_parameters.left_side_arrow,
-        bottom_arrow: fateQuote.quote_parameters.bottom_arrow,
+        id: fateQuote?.quote_parameter?.id,
+        shine: fateQuote?.quote_parameter?.shine,
+        straight_left: fateQuote?.quote_parameter?.straight_left,
+        straight_right: fateQuote?.quote_parameter?.straight_right,
+        straight_bottom: fateQuote?.quote_parameter?.straight_bottom,
+        top_number: fateQuote?.quote_parameter?.top_number,
+        right_side_number: fateQuote?.quote_parameter?.right_side_number,
+        bottom_right_number: fateQuote?.quote_parameter?.bottom_right_number,
+        bottom_left_number: fateQuote?.quote_parameter?.bottom_left_number,
+        left_side_number: fateQuote?.quote_parameter?.left_side_number,
+        right_side_arrow: fateQuote?.quote_parameter?.right_side_arrow,
+        left_side_arrow: fateQuote?.quote_parameter?.left_side_arrow,
+        bottom_arrow: fateQuote?.quote_parameter?.bottom_arrow,
       },
     };
 

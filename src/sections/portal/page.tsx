@@ -19,7 +19,7 @@ function App() {
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleToNextPage = (num: number, params?: string) => {
-    router.push(`/payment/${num}${params ? `?=${params}` : ''}`);
+    router.push(`/payment/${num}${params ? `?${params}` : ''}`);
   };
 
   // Responsive SVG dimensions
