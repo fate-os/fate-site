@@ -7,11 +7,12 @@ import moment from 'moment';
 type GetFateQuoteArgs = {
   date: string;
   gender?: string;
+  shine?: boolean;
 };
 
 const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext) => {
   try {
-    const { date, gender } = args;
+    const { date, gender, shine } = args;
 
     if (!date) {
       return {
@@ -41,6 +42,11 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       where: {
         date: exactDateUTC,
         ...(gender && { gender }),
+        ...(shine && {
+          quote_parameter: {
+            shine: 'up',
+          },
+        }),
       },
       include: {
         quote_parameter: true,

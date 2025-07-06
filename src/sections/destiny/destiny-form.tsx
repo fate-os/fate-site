@@ -135,11 +135,16 @@ const DestinyForm = (props: Props) => {
 
       const formattedDate = combinedDate.toISOString();
 
+      // Get shine parameter from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const shine = urlParams.get('shine') === 'true';
+
       // Call the GraphQL query
       const { data: queryData } = await getFateQuote({
         variables: {
           date: formattedDate,
           gender: data.gender,
+          shine: shine,
         },
       });
 

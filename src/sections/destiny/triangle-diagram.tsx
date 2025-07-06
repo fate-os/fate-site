@@ -44,7 +44,8 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
   const theme = useTheme();
 
   // Check if any of the main parameters are provided
-  const hasContent = top || leftSide || rightSide || bottomLeft || bottomRight || middleText;
+  const hasContent =
+    top || leftSide || rightSide || bottomLeft || bottomRight || middleText || shine;
 
   // Calculate triangle points
   const triangleTop = { x: width / 2, y: 50 };
@@ -152,7 +153,10 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
       )}
 
       {hasContent && (
-        <Box>
+        <Box
+          minHeight={shine ? 500 : 400}
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
           <svg width={width} height={height} style={{ overflow: 'visible' }}>
             {/* Rainbow arc */}
             {/* Full circle rainbow */}

@@ -36,7 +36,7 @@ export default async function Page({
 
   // If user has purchased, redirect to destiny with history ID
   if (data?.checkUserPurchase?.result.has_purchased && data?.checkUserPurchase?.result.history_id) {
-    const destinyUrl = `${paths.destiny}?history=${data.checkUserPurchase.result.history_id}`;
+    const destinyUrl = `${paths.destiny}?history=${data.checkUserPurchase.result.history_id}${isShine === 'true' ? '&shine=true' : ''}`;
     redirect(destinyUrl);
   }
 
