@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Direction" AS ENUM ('up', 'down', 'left', 'right');
+CREATE TYPE "Direction" AS ENUM ('up', 'down', 'left', 'right', 'both_left_and_right', 'both_up_and_down');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -43,6 +43,7 @@ CREATE TABLE "payment_history" (
     "id" TEXT NOT NULL,
     "stripe_payment_id" TEXT,
     "stripe_session_id" TEXT,
+    "paid_amount" DOUBLE PRECISION NOT NULL,
     "year_count" INTEGER NOT NULL,
     "user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -68,8 +69,10 @@ CREATE TABLE "fate_quote" (
 -- CreateTable
 CREATE TABLE "quote_parameter" (
     "id" TEXT NOT NULL,
+    "shine" "Direction",
     "straight_left" "Direction",
     "straight_right" "Direction",
+    "straight_bottom" "Direction",
     "top_number" INTEGER,
     "right_side_number" INTEGER,
     "bottom_right_number" INTEGER,

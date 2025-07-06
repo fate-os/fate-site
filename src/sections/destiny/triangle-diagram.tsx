@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Directions } from '@/types';
+import { Direction } from '@/types';
 import { Iconify } from '@/components/iconify';
 import { Box, Stack } from '@mui/material';
 
@@ -10,21 +10,25 @@ interface TriangleProps {
   rightSide?: number;
   bottomLeft?: number;
   bottomRight?: number;
-  leftSideArrow?: Directions;
-  rightSideArrow?: Directions;
-  bottomArrow?: Directions;
+  leftSideArrow?: Direction;
+  rightSideArrow?: Direction;
+  bottomArrow?: Direction;
   width?: number;
   height?: number;
-  straightLeft?: Directions;
-  straightRight?: Directions;
+  straightLeft?: Direction;
+  straightRight?: Direction;
+  straightBottom?: Direction;
+  shine?: Direction;
+  middleText?: string;
+  onClick?: () => void;
 }
 
 const TriangleDiagram: React.FC<TriangleProps> = ({
-  top = 4,
-  leftSide = 16,
-  rightSide = 52,
-  bottomLeft = 28,
-  bottomRight = 40,
+  top,
+  leftSide,
+  rightSide,
+  bottomLeft,
+  bottomRight,
   leftSideArrow,
   rightSideArrow,
   bottomArrow,
@@ -32,15 +36,49 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
   straightRight,
   width = 400,
   height = 300,
+  straightBottom,
+  shine,
+  middleText,
+  onClick,
 }) => {
   const theme = useTheme();
+
+  // Check if any of the main parameters are provided
+  const hasContent = top || leftSide || rightSide || bottomLeft || bottomRight || middleText;
+
   // Calculate triangle points
-  const trianglePoints = `${width / 2},50 50,${height - 50} ${width - 50},${height - 50}`;
+  const triangleTop = { x: width / 2, y: 50 };
+  const triangleLeft = { x: 50, y: height - 50 };
+  const triangleRight = { x: width - 50, y: height - 50 };
+
+  // Rainbow configuration - proper rainbow colors (ROYGBIV)
+  const rainbowColors = [
+    '#FF0000', // Red (outermost)
+    '#FF8C00', // Orange
+    '#FFD700', // Yellow
+    '#00FF00', // Green
+    '#0000FF', // Blue
+    '#4B0082', // Indigo
+    '#8B00FF', // Violet (innermost)
+  ];
+
+  // Rainbow circle parameters
+  const rainbowCenter = { x: triangleTop.x, y: triangleTop.y };
+  const baseRadius = 40;
+  const strokeWidth = 6;
+  const spacing = 2;
+
+  // Create full circle path
+  const createFullCircle = (radius: number) => {
+    const cx = rainbowCenter.x;
+    const cy = rainbowCenter.y;
+    return `M ${cx - radius} ${cy} A ${radius} ${radius} 0 1 1 ${cx + radius} ${cy} A ${radius} ${radius} 0 1 1 ${cx - radius} ${cy}`;
+  };
 
   return (
     <Box style={{ position: 'relative' }}>
       {/* Straight arrows in center using Iconify */}
-      {(straightLeft || straightLeft) && (
+      {(straightLeft || straightLeft || straightBottom) && (
         <Stack
           justifyContent={'center'}
           direction={'row'}
@@ -71,19 +109,95 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
               color={theme.palette.primary.main}
             />
           )}
+          {straightBottom && (
+            <>
+              {straightBottom === 'both_left_and_right' && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlnsXlink="http://www.w3.org/1999/xlink"
+                  version="1.1"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 100 125"
+                  enableBackground="new 0 0 100 100"
+                  xmlSpace="preserve"
+                  width={300}
+                  height={300}
+                  style={{ color: theme.palette.primary.main }}
+                >
+                  <g>
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeMiterlimit="10"
+                      x1="10.001"
+                      y1="49.823"
+                      x2="90"
+                      y2="49.823"
+                    />
+                    <polygon
+                      points="12.249,42.753 5.177,49.823 12.247,56.894"
+                      fill="currentColor"
+                    />
+                    <polygon
+                      points="87.753,56.894 94.823,49.823 87.753,42.753"
+                      fill="currentColor"
+                    />
+                  </g>
+                </svg>
+              )}
+            </>
+          )}
         </Stack>
       )}
 
-      {(!straightLeft || !straightLeft) && (
+      {hasContent && (
         <Box>
-          <svg width={width} height={height}>
+          <svg width={width} height={height} style={{ overflow: 'visible' }}>
+            {/* Rainbow arc */}
+            {/* Full circle rainbow */}
+            {shine === 'up' && (
+              <g>
+                {rainbowColors.map((color, i) => {
+                  const radius =
+                    baseRadius + (rainbowColors.length - 1 - i) * (strokeWidth + spacing);
+                  return (
+                    <path
+                      key={i}
+                      d={createFullCircle(radius)}
+                      fill="none"
+                      stroke={color}
+                      strokeWidth={strokeWidth}
+                      strokeLinecap="round"
+                    />
+                  );
+                })}
+              </g>
+            )}
+
             {/* Triangle outline */}
             <polygon
-              points={trianglePoints}
-              fill="none"
+              points={`${triangleTop.x},${triangleTop.y} ${triangleLeft.x},${triangleLeft.y} ${triangleRight.x},${triangleRight.y}`}
+              fill={shine ? 'white' : 'none'}
               stroke={theme.palette.primary.main}
               strokeWidth="3"
+              style={{ cursor: onClick ? 'pointer' : 'default' }}
+              onClick={onClick}
             />
+
+            {/* Middle text */}
+            {middleText && (
+              <text
+                x={width / 2}
+                y={height / 2 + 5}
+                textAnchor="middle"
+                fill={theme.palette.text.primary}
+                fontSize="16"
+                fontWeight="700"
+              >
+                {middleText}
+              </text>
+            )}
 
             {/* Numbers positioned around the triangle */}
             {/* Top number */}

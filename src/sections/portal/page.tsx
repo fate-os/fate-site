@@ -1,76 +1,10 @@
 'use client';
 // This file is a part of the React application that displays a circular layout of numbers with labels
 import React from 'react';
-import { Box, Typography, useTheme, useMediaQuery, Paper, Container } from '@mui/material';
-import { styled } from '@mui/material';
+import { Box, Typography, useTheme, useMediaQuery, Paper, Container, Grid2 } from '@mui/material';
+
 import { useRouter } from 'next/navigation';
-
-// Type definitions
-type Position = 'top' | 'top-right' | 'right' | 'bottom' | 'left';
-
-interface AmountLabel {
-  amount: string;
-  position: Position;
-}
-
-interface Offset {
-  x: number;
-  y: number;
-  transform?: string;
-}
-
-interface AmountLabels {
-  [key: number]: AmountLabel;
-}
-
-const AppContainer = styled(Box)({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '110vh',
-  position: 'relative',
-  overflow: 'auto',
-  marginBottom: '4rem',
-});
-
-const NumberText = styled(Typography)({
-  position: 'absolute',
-  fontWeight: 'bold',
-  fontSize: '15px',
-  display: 'inline-block',
-  whiteSpace: 'nowrap',
-  left: '50%',
-  top: '50%',
-  transformOrigin: '0 0',
-});
-
-const AmountText = styled(Typography)({
-  fontWeight: 500,
-  fontSize: '14px',
-  whiteSpace: 'nowrap',
-});
-
-const YearsText = styled(Typography)({
-  fontWeight: 700,
-  fontSize: '14px',
-  whiteSpace: 'nowrap',
-});
-
-const ConnectorLine = styled(Box)({
-  width: '22px',
-  height: '2px',
-  backgroundColor: '#333',
-  position: 'absolute',
-  mx: 2,
-});
-
-const VerticalLine = styled(Box)({
-  width: '2px',
-  height: '22px',
-  backgroundColor: '#333',
-  position: 'absolute',
-  my: 2,
-});
+import { TriangleDiagram } from '../destiny/triangle-diagram';
 
 function App() {
   // Generate data for years 1-60 with corresponding dollar amounts
@@ -84,8 +18,8 @@ function App() {
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
 
-  const handleToNextPage = (num: number) => {
-    router.push(`/payment/${num}`);
+  const handleToNextPage = (num: number, params?: string) => {
+    router.push(`/payment/${num}${params ? `?=${params}` : ''}`);
   };
 
   // Responsive SVG dimensions
@@ -143,11 +77,10 @@ function App() {
       sx={{
         minHeight: '100vh',
         py: 4,
-        maxWidth: '100vw',
         overflowX: 'hidden',
       }}
     >
-      <Container maxWidth="lg" sx={{ maxWidth: '100vw', px: { xs: 0, sm: 2 } }}>
+      <Container maxWidth="xl" sx={{ px: { xs: 0, sm: 2 } }}>
         <Box textAlign="center" mb={4}>
           <Typography variant="h3" component="h1" gutterBottom>
             Discover the Trajectory of Life
@@ -158,148 +91,171 @@ function App() {
         </Box>
 
         {/* Responsive scrollable SVG container */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          mb={4}
-          sx={{
-            width: '100%',
-            overflowX: 'auto',
-            WebkitOverflowScrolling: 'touch',
-            px: isSmDown ? 1 : 0,
-            maxWidth: '100vw',
-          }}
-        >
-          <Paper
-            elevation={0}
+        <Grid2 container flexWrap={'wrap-reverse'} spacing={10}>
+          <Grid2
+            size={{ xs: 12, md: 4, sm: 6 }}
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <TriangleDiagram
+              shine="up"
+              top={undefined}
+              rightSide={undefined}
+              bottomRight={undefined}
+              bottomLeft={undefined}
+              leftSide={undefined}
+              leftSideArrow={undefined}
+              rightSideArrow={undefined}
+              bottomArrow={undefined}
+              straightLeft={undefined}
+              straightRight={undefined}
+              middleText="$4500"
+              onClick={() => handleToNextPage(45, 'shine=true')}
+            ></TriangleDiagram>
+          </Grid2>
+
+          <Grid2
+            size={{ xs: 12, md: 8, sm: 6 }}
+            display="flex"
+            justifyContent="center"
+            mb={4}
             sx={{
-              overflow: 'auto',
-              boxShadow: 'none',
+              width: '100%',
+              overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              px: isSmDown ? 1 : 0,
             }}
           >
-            <svg
-              width="100%"
-              height={svgHeight}
-              viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-              style={{ minWidth: svgWidth, maxWidth: '100%', height: 'auto', display: 'block' }}
+            <Paper
+              elevation={0}
+              sx={{
+                overflow: 'auto',
+                boxShadow: 'none',
+              }}
             >
-              {/* Gradient and shadow definitions */}
-              <defs>
-                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow
-                    dx="0"
-                    dy="6"
-                    stdDeviation="12"
-                    floodColor="#000"
-                    floodOpacity="0.15"
-                  />
-                </filter>
-              </defs>
-
-              {/* Main vertical oval - clean with no fill */}
-              <ellipse
-                cx={centerX}
-                cy={centerY}
-                rx={ovalRadiusX}
-                ry={ovalRadiusY}
-                fill="none"
-                stroke="#1976d2"
-                strokeWidth="3"
-                filter="url(#shadow)"
-              />
-
-              {/* Data points */}
-              {positions.map((point, index) => (
-                <g
-                  key={index}
-                  onClick={() => handleToNextPage(point.year)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {/* Connection line from oval to amount */}
-                  <line
-                    x1={point.ovalX}
-                    y1={point.ovalY}
-                    x2={point.amountX}
-                    y2={point.amountY}
-                    stroke="#757575"
-                    strokeWidth="1.5"
-                    opacity="0.7"
-                  />
-
-                  {/* Small dot on oval perimeter */}
-                  <circle
-                    cx={point.ovalX}
-                    cy={point.ovalY}
-                    r="3"
-                    fill="#1976d2"
-                    stroke="white"
-                    strokeWidth="2"
-                  />
-
-                  {/* Year text with background for visibility */}
-                  <g>
-                    {/* Background rectangle for year text */}
-                    <rect
-                      x={point.yearX - 25}
-                      y={point.yearY - 8}
-                      width="50"
-                      height="16"
-                      fill="white"
-                      fillOpacity="0.95"
-                      rx="2"
-                      stroke="#e0e0e0"
-                      strokeWidth="0.5"
-                      transform={`rotate(${point.rotationAngle}, ${point.yearX}, ${point.yearY})`}
+              <svg
+                width="100%"
+                height={svgHeight}
+                viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+                style={{ minWidth: svgWidth, maxWidth: '100%', height: 'auto', display: 'block' }}
+              >
+                {/* Gradient and shadow definitions */}
+                <defs>
+                  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow
+                      dx="0"
+                      dy="6"
+                      stdDeviation="12"
+                      floodColor="#000"
+                      floodOpacity="0.15"
                     />
-                    {/* Year number and "year/years" text in one line */}
-                    <text
-                      x={point.yearX}
-                      y={point.yearY}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fill="#1a1a1a"
-                      fontSize="11"
-                      fontWeight="600"
-                      transform={`rotate(${point.rotationAngle}, ${point.yearX}, ${point.yearY})`}
-                    >
-                      {point.year} {point.year === 1 ? 'year' : 'years'}
-                    </text>
-                  </g>
+                  </filter>
+                </defs>
 
-                  {/* Dollar amount with background for visibility */}
-                  <g>
-                    {/* Background rectangle for dollar amount */}
-                    <rect
-                      x={point.amountX - 30}
-                      y={point.amountY - 8}
-                      width="60"
-                      height="16"
-                      fill="white"
-                      fillOpacity="0.95"
-                      rx="2"
-                      stroke="#e0e0e0"
-                      strokeWidth="0.5"
-                      transform={`rotate(${point.rotationAngle}, ${point.amountX}, ${point.amountY})`}
+                {/* Main vertical oval - clean with no fill */}
+                <ellipse
+                  cx={centerX}
+                  cy={centerY}
+                  rx={ovalRadiusX}
+                  ry={ovalRadiusY}
+                  fill="none"
+                  stroke="#1976d2"
+                  strokeWidth="3"
+                  filter="url(#shadow)"
+                />
+
+                {/* Data points */}
+                {positions.map((point, index) => (
+                  <g
+                    key={index}
+                    onClick={() => handleToNextPage(point.year)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {/* Connection line from oval to amount */}
+                    <line
+                      x1={point.ovalX}
+                      y1={point.ovalY}
+                      x2={point.amountX}
+                      y2={point.amountY}
+                      stroke="#757575"
+                      strokeWidth="1.5"
+                      opacity="0.7"
                     />
-                    {/* Dollar amount text */}
-                    <text
-                      x={point.amountX}
-                      y={point.amountY}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fill="#2e7d32"
-                      fontSize="11"
-                      fontWeight="700"
-                      transform={`rotate(${point.rotationAngle}, ${point.amountX}, ${point.amountY})`}
-                    >
-                      ${point.amount.toLocaleString()}
-                    </text>
+
+                    {/* Small dot on oval perimeter */}
+                    <circle
+                      cx={point.ovalX}
+                      cy={point.ovalY}
+                      r="3"
+                      fill="#1976d2"
+                      stroke="white"
+                      strokeWidth="2"
+                    />
+
+                    {/* Year text with background for visibility */}
+                    <g>
+                      {/* Background rectangle for year text */}
+                      <rect
+                        x={point.yearX - 25}
+                        y={point.yearY - 8}
+                        width="50"
+                        height="16"
+                        fill="white"
+                        fillOpacity="0.95"
+                        rx="2"
+                        stroke="#e0e0e0"
+                        strokeWidth="0.5"
+                        transform={`rotate(${point.rotationAngle}, ${point.yearX}, ${point.yearY})`}
+                      />
+                      {/* Year number and "year/years" text in one line */}
+                      <text
+                        x={point.yearX}
+                        y={point.yearY}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fill="#1a1a1a"
+                        fontSize="11"
+                        fontWeight="600"
+                        transform={`rotate(${point.rotationAngle}, ${point.yearX}, ${point.yearY})`}
+                      >
+                        {point.year} {point.year === 1 ? 'year' : 'years'}
+                      </text>
+                    </g>
+
+                    {/* Dollar amount with background for visibility */}
+                    <g>
+                      {/* Background rectangle for dollar amount */}
+                      <rect
+                        x={point.amountX - 30}
+                        y={point.amountY - 8}
+                        width="60"
+                        height="16"
+                        fill="white"
+                        fillOpacity="0.95"
+                        rx="2"
+                        stroke="#e0e0e0"
+                        strokeWidth="0.5"
+                        transform={`rotate(${point.rotationAngle}, ${point.amountX}, ${point.amountY})`}
+                      />
+                      {/* Dollar amount text */}
+                      <text
+                        x={point.amountX}
+                        y={point.amountY}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fill="#2e7d32"
+                        fontSize="11"
+                        fontWeight="700"
+                        transform={`rotate(${point.rotationAngle}, ${point.amountX}, ${point.amountY})`}
+                      >
+                        ${point.amount.toLocaleString()}
+                      </text>
+                    </g>
                   </g>
-                </g>
-              ))}
-            </svg>
-          </Paper>
-        </Box>
+                ))}
+              </svg>
+            </Paper>
+          </Grid2>
+        </Grid2>
       </Container>
     </Box>
   );

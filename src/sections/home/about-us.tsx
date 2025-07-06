@@ -12,7 +12,7 @@ const AboutUs = () => {
           <Grid2 container spacing={2}>
             <Grid2 size={{ xs: 12, md: 8 }}>
               <Stack spacing={3}>
-                <Stack direction={'row'} spacing={5}>
+                <Stack direction={'row'} spacing={5} flexWrap={'wrap'}>
                   <Image
                     alt="Mei Zhu He – Founder of Fate OS Inc."
                     src="/assets/images/founder.png"

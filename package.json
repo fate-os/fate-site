@@ -4,9 +4,7 @@
   "version": "1.0.1",
   "description": "Next & JavaScript",
   "private": true,
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
+ 
   "scripts": {
     "dev": "next dev -p 3022",
     "start": "next start",
@@ -21,7 +19,8 @@
     "re:build": "yarn rm:all && yarn install && yarn build",
     "re:build-npm": "npm run rm:all && npm install && npm run build",
     "start:out": "npx serve@latest out",
-    "postinstall": "prisma generate && prisma migrate deploy"
+    "postinstall": "prisma generate && prisma migrate deploy",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",

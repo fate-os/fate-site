@@ -45,6 +45,7 @@ export type ForgotArg = {
 };
 export type SessionArg = {
   years: number;
+  shine?: boolean;
 };
 
 export type VerifyPaymentArg = {

@@ -5,22 +5,32 @@ const prismaClient = new PrismaClient();
 
 const seedQuote = async () => {
   try {
-    const quoteParam1 = await prismaClient.quote_parameter.create({
+    const quoteParam7 = await prismaClient.quote_parameter.create({
       data: {
-        straight_left: 'up',
-        straight_right: 'up',
+        shine: 'up',
+      },
+    });
+    const quoteParam8 = await prismaClient.quote_parameter.create({
+      data: {
+        straight_left: 'down',
       },
     });
 
     // Then create the fate quotes with references to the quote parameters
     const fateQuotes = await prismaClient.fate_quote.createMany({
       data: [
-        // {
-        //   date: moment.utc('1962-10-29 00:00:00').toDate(), // October 29, 1962 UTC
-        //   gender: 'male',
-        //   year_count: 60,
-        //   quote_parameter_id: quoteParam1.id,
-        // },
+        {
+          date: moment.utc('1986-04-21 13:30:00').toDate(),
+          gender: 'female',
+          year_count: 60,
+          quote_parameter_id: quoteParam7.id,
+        },
+        {
+          date: moment.utc('1935-07-03 13:30:00').toDate(),
+          gender: 'male',
+          year_count: 1,
+          quote_parameter_id: quoteParam8.id,
+        },
       ],
     });
 

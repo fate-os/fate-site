@@ -14,7 +14,7 @@ const acceptedCurrency = ['usd'];
  */
 const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppContext) => {
   try {
-    const { years } = arg;
+    const { years, shine } = arg;
 
     if (!cont.account?.account) {
       return {
@@ -33,17 +33,12 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
       };
     }
 
-    // const subResult = await FateOsClient.subscriptions.findUnique({
-    //   select: {
-    //     id: true,
-    //     usd_amount: true,
-    //     gbp_amount: true,
-    //     subscription_plan: true,
-    //     created_at: true,
-    //     subscription_name: true,
-    //   },
-    //   where: { id: subscriptionId },
-    // });
+    const findFateQuote = await FateOsClient.quote_parameter.findFirst({
+      select: {
+        id: true,
+      },
+      where: { shine: shine ? 'up' : undefined },
+    });
 
     // if (!subResult) {
     //   return {
@@ -73,6 +68,7 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
       metadata: {
         user_id: cont?.account?.account.id,
         session_id: '{CHECKOUT_SESSION_ID}',
+        years,
       },
     });
     return {
@@ -114,6 +110,8 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['payment_intent'],
     });
+
+    console.log(session);
 
     return {
       success: true,

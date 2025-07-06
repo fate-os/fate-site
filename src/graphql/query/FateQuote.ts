@@ -12,8 +12,10 @@ export const GET_FATE_QUOTE = gql`
         gender
         quote_parameters {
           id
+          shine
           straight_left
           straight_right
+          straight_bottom
           top_number
           right_side_number
           bottom_right_number

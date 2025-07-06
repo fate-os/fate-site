@@ -106,18 +106,26 @@ export interface FateQuoteResult {
   quote_parameters: QuoteParameter;
 }
 
-export type Directions = 'up' | 'down' | 'left' | 'right';
+export type Direction =
+  | 'up'
+  | 'down'
+  | 'left'
+  | 'right'
+  | 'both_left_and_right'
+  | 'both_up_and_down';
 
 export interface QuoteParameter {
   id: string;
-  straight_left: Directions;
-  straight_right: Directions;
-  top_number: number;
-  right_side_number: number;
-  bottom_right_number: number;
-  bottom_left_number: number;
-  left_side_number: number;
-  right_side_arrow: Directions;
-  left_side_arrow: Directions;
-  bottom_arrow: Directions;
+  shine?: Direction;
+  straight_left?: Direction;
+  straight_right?: Direction;
+  straight_bottom?: Direction;
+  top_number?: number;
+  right_side_number?: number;
+  bottom_right_number?: number;
+  bottom_left_number?: number;
+  left_side_number?: number;
+  right_side_arrow?: Direction;
+  left_side_arrow?: Direction;
+  bottom_arrow?: Direction;
 }

@@ -5,12 +5,16 @@ enum Direction {
   down
   left
   right
+  both_left_and_right
+  both_up_and_down
 }
 
 type QuoteParameter {
   id: ID!
+  shine: Direction
   straight_left: Direction
   straight_right: Direction
+  straight_bottom: Direction
   top_number: Int
   right_side_number: Int
   bottom_right_number: Int
@@ -52,8 +56,10 @@ type Mutation {
   ): FateQuoteDetails
   
   createQuoteParameter(
+    shine: Direction
     straight_left: Direction
     straight_right: Direction
+    straight_bottom: Direction
     top_number: Int
     right_side_number: Int
     bottom_right_number: Int

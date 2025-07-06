@@ -50,6 +50,7 @@ model payment_history {
   id                String     @id @default(uuid())
   stripe_payment_id String?
   stripe_session_id String?
+  paid_amount       Float
   year_count        Int
   user              user       @relation(fields: [user_id], references: [id])
   user_id           String
@@ -73,8 +74,10 @@ model fate_quote {
 
 model quote_parameter {
   id                  String       @id @default(uuid())
+  shine               Direction?
   straight_left       Direction?
   straight_right      Direction?
+  straight_bottom     Direction?
   top_number          Int?
   right_side_number   Int?
   bottom_right_number Int?
@@ -93,6 +96,8 @@ enum Direction {
   down
   left
   right
+  both_left_and_right
+  both_up_and_down
 }
 
 // enum AccountProvider {

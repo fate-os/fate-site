@@ -63,8 +63,10 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       gender: fateQuote.gender,
       quote_parameters: {
         id: fateQuote.quote_parameters.id,
+        shine: fateQuote.quote_parameters.shine,
         straight_left: fateQuote.quote_parameters.straight_left,
         straight_right: fateQuote.quote_parameters.straight_right,
+        straight_bottom: fateQuote.quote_parameters.straight_bottom,
         top_number: fateQuote.quote_parameters.top_number,
         right_side_number: fateQuote.quote_parameters.right_side_number,
         bottom_right_number: fateQuote.quote_parameters.bottom_right_number,

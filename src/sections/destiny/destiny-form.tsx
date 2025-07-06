@@ -79,6 +79,9 @@ const DestinyForm = (props: Props) => {
   // When year changes, set month and day to Jan 1 of that year
   React.useEffect(() => {
     if (yearValue) {
+      if (!dayjs(yearValue).isValid()) {
+        return;
+      }
       const date = dayjs(yearValue).startOf('year');
       setValue('month', date.toISOString());
       setValue('day', date.toISOString());
@@ -93,6 +96,9 @@ const DestinyForm = (props: Props) => {
   // When month changes, set day to the first day of that month
   React.useEffect(() => {
     if (yearValue && monthValue) {
+      if (!dayjs(monthValue).isValid()) {
+        return;
+      }
       // monthValue is an ISO string, get the year and month from it
       const date = dayjs(monthValue).startOf('month');
       setValue('day', date.toISOString());
