@@ -20,7 +20,8 @@
     "re:build-npm": "npm run rm:all && npm install && npm run build",
     "start:out": "npx serve@latest out",
     "postinstall": "prisma generate && prisma migrate deploy",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "empty": "node src/db/empty.js"
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",
