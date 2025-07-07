@@ -30,6 +30,7 @@ import { useAppDispatch } from '@/store/hooks';
 import Cookies from 'js-cookie';
 import { ACCESS_TOKEN } from '@/config-global';
 import TermsAcceptance from '@/sections/terms-and-policy/TermsAcceptance';
+import { useTranslate } from '@/locales';
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +53,7 @@ type JwtSignInViewProps = {
 
 export function JwtSignInView({ showLess }: JwtSignInViewProps) {
   const router = useRouter();
+  const { t } = useTranslate('app');
 
   const [login, { loading }] = useMutation(LOGIN_ACCOUNT);
 
@@ -108,11 +110,11 @@ export function JwtSignInView({ showLess }: JwtSignInViewProps) {
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
-      <Typography variant="h5">Log in to your account</Typography>
+      <Typography variant="h5">{t('authentication.signInTitle')}</Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {`Don't have an account?`}
+          {t('authentication.noAccount')}
         </Typography>
 
         <Link
@@ -121,7 +123,7 @@ export function JwtSignInView({ showLess }: JwtSignInViewProps) {
           variant="subtitle1"
           sx={{ textDecoration: 'underline' }}
         >
-          Register
+          {t('authentication.register')}
         </Link>
       </Stack>
     </Stack>
@@ -130,13 +132,17 @@ export function JwtSignInView({ showLess }: JwtSignInViewProps) {
   const renderForm = (
     <Stack spacing={3}>
       <Stack spacing={3}>
-        <Field.Text name="email" label="Email address" size={showLess ? 'small' : 'large'} />
+        <Field.Text
+          name="email"
+          label={t('authentication.emailAddress') || 'Email address'}
+          size={showLess ? 'small' : 'large'}
+        />
 
         <Stack spacing={1.5}>
           <Field.Text
             name="password"
-            label="Password"
-            placeholder="6+ characters"
+            label={t('authentication.password') || 'Password'}
+            placeholder={t('authentication.passwordPlaceholder') || '6+ characters'}
             type={password.value ? 'text' : 'password'}
             InputProps={{
               endAdornment: (
@@ -157,7 +163,7 @@ export function JwtSignInView({ showLess }: JwtSignInViewProps) {
             color="inherit"
             sx={{ alignSelf: 'flex-end' }}
           >
-            Forgot password?
+            {t('authentication.forgotPassword')}
           </Link>
         </Stack>
 
@@ -169,7 +175,7 @@ export function JwtSignInView({ showLess }: JwtSignInViewProps) {
           variant="outlined"
           loading={isSubmitting || loading}
         >
-          Log in
+          {t('authentication.login')}
         </LoadingButton>
       </Stack>
     </Stack>

@@ -81,6 +81,8 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
         right_side_arrow: fateQuote?.quote_parameter?.right_side_arrow,
         left_side_arrow: fateQuote?.quote_parameter?.left_side_arrow,
         bottom_arrow: fateQuote?.quote_parameter?.bottom_arrow,
+        perpendicular: fateQuote?.quote_parameter?.perpendicular,
+        has_circle: fateQuote?.quote_parameter?.has_circle,
       },
     };
 

@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import ListItemText from '@mui/material/ListItemText';
 
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useTranslate } from '@/locales';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -24,6 +25,7 @@ const PAYMENT_OPTIONS = [{ value: 'credit', label: 'Credit / Debit card' }];
 
 export function PaymentMethods() {
   const newCard = useBoolean();
+  const { t } = useTranslate('app');
 
   const [method, setMethod] = useState('credit');
 
@@ -34,13 +36,13 @@ export function PaymentMethods() {
   return (
     <>
       <Stack spacing={5}>
-        <Typography variant="h6">Payment method</Typography>
+        <Typography variant="h6">{t('payment.paymentMethod')}</Typography>
 
         <Stack spacing={3}>
           {PAYMENT_OPTIONS.map((option) => (
             <OptionItem
               key={option.label}
-              option={option}
+              option={{ ...option, label: t('payment.cards') }}
               selected={method === option.value}
               isCredit={option.value === 'credit' && method === 'credit'}
               onOpen={newCard.onTrue}

@@ -27,6 +27,7 @@ import { useMutation } from '@apollo/client';
 import { FORGOT_PASSWORD, UPDATE_RESET_PASSWORD } from '@/graphql/mutation/AuthMutation';
 import { toast } from 'src/components/snackbar';
 import { Alert } from '@mui/material';
+import { useTranslate } from '@/locales';
 
 export const UpdatePasswordSchema = zod
   .object({
@@ -53,6 +54,7 @@ export const UpdatePasswordSchema = zod
 
 export function JwtUpdatePasswordView() {
   const router = useRouter();
+  const { t } = useTranslate('app');
 
   const searchParams = useSearchParams();
 
@@ -134,10 +136,10 @@ export function JwtUpdatePasswordView() {
       <SentIcon sx={{ mx: 'auto' }} />
 
       <Stack spacing={1} sx={{ mt: 3, mb: 5, textAlign: 'center', whiteSpace: 'pre-line' }}>
-        <Typography variant="h5">Request sent successfully!</Typography>
+        <Typography variant="h5">{t('authentication.updatePasswordTitle')}</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {`We've sent a 6-digit confirmation email to your email. \nPlease enter the code in below box to verify your email.`}
+          {t('authentication.updatePasswordDesc')}
         </Typography>
       </Stack>
     </>
@@ -147,7 +149,7 @@ export function JwtUpdatePasswordView() {
     <Stack spacing={3}>
       <Field.Text
         name="email"
-        label="Email address"
+        label={t('authentication.emailAddress') || 'Email address'}
         placeholder="example@gmail.com"
         InputLabelProps={{ shrink: true }}
         disabled
@@ -189,11 +191,11 @@ export function JwtUpdatePasswordView() {
       />
 
       <LoadingButton fullWidth size="large" type="submit" variant="outlined" loading={isSubmitting}>
-        Update password
+        {t('authentication.updatePassword')}
       </LoadingButton>
 
       <Typography variant="body2" sx={{ mx: 'auto' }}>
-        {`Don’t have a code? `}
+        {t('authentication.dontHaveCode')}
         <Link
           variant="subtitle2"
           onClick={handleResendCode}
@@ -202,7 +204,7 @@ export function JwtUpdatePasswordView() {
             ...(counting && { color: 'text.disabled', pointerEvents: 'none' }),
           }}
         >
-          Resend code {counting && `(${countdown}s)`}
+          {t('authentication.resendCode')} {counting && `(${countdown}s)`}
         </Link>
       </Typography>
 
@@ -214,7 +216,7 @@ export function JwtUpdatePasswordView() {
         sx={{ gap: 0.5, alignSelf: 'center', alignItems: 'center', display: 'inline-flex' }}
       >
         <Iconify width={16} icon="eva:arrow-ios-back-fill" />
-        Return to sign in
+        {t('authentication.returnToSignIn')}
       </Link>
     </Stack>
   );

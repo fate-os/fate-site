@@ -49,6 +49,8 @@ function DestinyResult() {
         straightRight={fateQuoteResult.quote_parameters.straight_right}
         straightBottom={fateQuoteResult.quote_parameters.straight_bottom}
         shine={fateQuoteResult.quote_parameters.shine}
+        perpendicular={fateQuoteResult.quote_parameters.perpendicular}
+        hasCircle={fateQuoteResult.quote_parameters.has_circle}
       />
     </Box>
   );

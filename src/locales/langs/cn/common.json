@@ -3,12 +3,5 @@
     "lang": "Chinese",
     "description": "您的下一个项目的起点基于 MUI。简单的定制可帮助您更快、更好地构建应用程序。"
   },
-  "signInTitle": "登录到您的账户",
-  "noAccount": "还没有账户？",
-  "signUp": "注册",
-  "email": "电子邮箱地址",
-  "password": "密码",
-  "passwordPlaceholder": "6位以上字符",
-  "forgotPassword": "忘记密码？",
-  "termsNotice": "继续操作即表示您已阅读并同意我们的《条款与条件》和《隐私政策》。"
+  "aboutUs": "何女士是一位对命运系统有着深刻洞见的远见卓识者，现居住在美国洛杉矶。<br />2025年5月14日</b>，她在美国特拉华州独立创立了Fate OS Inc.公司，<br />致力于通过现代科技将古老的玄学智慧带给全人类。"
 }

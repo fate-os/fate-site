@@ -2,20 +2,17 @@
 
 // core (MUI)
 import {
-  frFR as frFRCore,
+enUS as enUSCore,
   zhCN as zhCNCore,
- 
 } from '@mui/material/locale';
 // date pickers (MUI)
 import {
   enUS as enUSDate,
-  frFR as frFRDate,
   zhCN as zhCNDate,
 } from '@mui/x-date-pickers/locales';
 // data grid (MUI)
 import {
   enUS as enUSDataGrid,
-  frFR as frFRDataGrid,
   zhCN as zhCNDataGrid,
  
 } from '@mui/x-data-grid/locales';
@@ -30,17 +27,7 @@ export const allLangs = [
     adapterLocale: 'en',
     numberFormat: { code: 'en-US', currency: 'USD' },
     systemValue: {
-      components: { ...enUSDate.components, ...enUSDataGrid.components },
-    },
-  },
-  {
-    value: 'fr',
-    label: 'French',
-    countryCode: 'FR',
-    adapterLocale: 'fr',
-    numberFormat: { code: 'fr-Fr', currency: 'EUR' },
-    systemValue: {
-      components: { ...frFRCore.components, ...frFRDate.components, ...frFRDataGrid.components },
+      components: {...enUSCore.components ,...enUSDate.components, ...enUSDataGrid.components },
     },
   },
 

@@ -24,6 +24,8 @@ export const GET_FATE_QUOTE = gql`
           right_side_arrow
           left_side_arrow
           bottom_arrow
+          perpendicular
+          has_circle
         }
       }
     }

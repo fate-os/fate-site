@@ -30,6 +30,7 @@ export function RHFDatePicker({ name, slotProps, ...other }) {
             },
             ...slotProps,
           }}
+          minDate={dayjs(new Date('1800-01-01'))}
           {...other}
         />
       )}

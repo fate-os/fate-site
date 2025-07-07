@@ -41,7 +41,6 @@ export function DashboardLayout({ sx, children, data }) {
   const layoutQuery = 'lg';
 
   const navData = data?.nav ?? dashboardNavData;
-  const adminData = account?.super_admin ? adminNavData : [];
 
   const isNavMini = settings.navLayout === 'mini';
 
@@ -52,7 +51,7 @@ export function DashboardLayout({ sx, children, data }) {
   return (
     <>
       <NavMobile
-        data={[...navData, ...adminData]}
+        data={[...navData]}
         open={mobileNavOpen.value}
         onClose={mobileNavOpen.onFalse}
         cssVars={navColorVars.section}

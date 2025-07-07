@@ -5,6 +5,7 @@ import { Box, Typography, useTheme, useMediaQuery, Paper, Container, Grid2 } fro
 
 import { useRouter } from 'next/navigation';
 import { TriangleDiagram } from '../destiny/triangle-diagram';
+import { useTranslate } from '@/locales';
 
 function App() {
   // Generate data for years 1-60 with corresponding dollar amounts
@@ -17,6 +18,7 @@ function App() {
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
+  const { t } = useTranslate('app');
 
   const handleToNextPage = (num: number, params?: string) => {
     router.push(`/payment/${num}${params ? `?${params}` : ''}`);
@@ -81,17 +83,20 @@ function App() {
       }}
     >
       <Container maxWidth="xl" sx={{ px: { xs: 0, sm: 2 } }}>
-        <Box textAlign="center" mb={4}>
+        <Box textAlign="center" mb={5}>
           <Typography variant="h3" component="h1" gutterBottom>
-            Discover the Trajectory of Life
+            {t('index.line1')}
           </Typography>
           <Typography variant="h6" component="p" sx={{ maxWidth: 600, mx: 'auto' }}>
-            Clearly visualize your growth trajectory from year 1 to year 60
+            {t('index.line2')}
+          </Typography>
+          <Typography variant="subtitle2" sx={{ maxWidth: 600, mx: 'auto', mt: 3 }}>
+            {t('index.line3')}
           </Typography>
         </Box>
 
         {/* Responsive scrollable SVG container */}
-        <Grid2 container flexWrap={'wrap-reverse'} spacing={10}>
+        <Grid2 container flexWrap={'wrap-reverse'} spacing={10} mb={5}>
           <Grid2
             size={{ xs: 12, md: 4, sm: 6 }}
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

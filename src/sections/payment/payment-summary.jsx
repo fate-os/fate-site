@@ -8,11 +8,13 @@ import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { PaymentDialog } from './payment-dialog';
 import { useState } from 'react';
+import { useTranslate } from '@/locales';
 
 // ----------------------------------------------------------------------
 
 export function PaymentSummary({ years, isShine, sx, ...other }) {
   const [continuePayment, setContinuePayment] = useState(0);
+  const { t } = useTranslate('app');
 
   const totalAmount = years * 100;
 
@@ -36,13 +38,13 @@ export function PaymentSummary({ years, isShine, sx, ...other }) {
         {...other}
       >
         <Typography variant="h6" sx={{ mb: 5 }}>
-          Summary
+          {t('payment.summery')}
         </Typography>
 
         <Stack spacing={2.5}>
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 700 }}>
-              Years
+              {t('payment.years')}
             </Typography>
 
             <Label color="error">{years}</Label>
@@ -53,7 +55,7 @@ export function PaymentSummary({ years, isShine, sx, ...other }) {
           <Divider sx={{ borderStyle: 'dashed' }} />
 
           <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography variant="subtitle1">Total billed</Typography>
+            <Typography variant="subtitle1">{t('payment.totalBilled')}</Typography>
 
             <Typography variant="subtitle1">${totalAmount}*</Typography>
           </Stack>
@@ -62,7 +64,7 @@ export function PaymentSummary({ years, isShine, sx, ...other }) {
         </Stack>
 
         <Typography component="div" variant="caption" sx={{ color: 'text.secondary', mt: 1 }}>
-          * Plus applicable taxes
+          * {t('payment.plusTax')}
         </Typography>
 
         <Button

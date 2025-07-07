@@ -23,6 +23,8 @@ type QuoteParameter {
   right_side_arrow: Direction
   left_side_arrow: Direction
   bottom_arrow: Direction
+  perpendicular: Direction
+  has_circle: Boolean
   created_at: String
   updated_at: String
 }
@@ -68,6 +70,8 @@ type Mutation {
     right_side_arrow: Direction
     left_side_arrow: Direction
     bottom_arrow: Direction
+    perpendicular: Direction
+    has_circle: Boolean
   ): QuoteParameter
 }
 

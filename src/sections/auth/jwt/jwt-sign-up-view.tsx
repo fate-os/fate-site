@@ -30,6 +30,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { accountInitialize } from '@/store/features/auth.reducer';
 import Cookies from 'js-cookie';
 import { ACCESS_TOKEN } from '@/config-global';
+import { useTranslate } from '@/locales';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +55,7 @@ type JwtSignUpViewProps = {
 
 export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
   const { account } = useAppSelector((s) => s.auth);
+  const { t } = useTranslate('app');
 
   const router = useRouter();
 
@@ -109,11 +111,11 @@ export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
-      <Typography variant="h5">Get started!</Typography>
+      <Typography variant="h5">{t('authentication.signUpTitle')}</Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Already have an account?
+          {t('authentication.alreadyAccount')}
         </Typography>
 
         <Link
@@ -122,7 +124,7 @@ export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
           variant="subtitle1"
           sx={{ textDecoration: 'underline' }}
         >
-          Log in
+          {t('authentication.logIn')}
         </Link>
       </Stack>
     </Stack>
@@ -131,16 +133,28 @@ export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
   const renderForm = (
     <Stack spacing={3}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Field.Text name="first_name" label="First name" size={showLess ? 'small' : 'large'} />
-        <Field.Text name="last_name" label="Last name" size={showLess ? 'small' : 'large'} />
+        <Field.Text
+          name="first_name"
+          label={t('authentication.firstName') || 'First name'}
+          size={showLess ? 'small' : 'large'}
+        />
+        <Field.Text
+          name="last_name"
+          label={t('authentication.lastName') || 'Last name'}
+          size={showLess ? 'small' : 'large'}
+        />
       </Stack>
 
-      <Field.Text name="email" label="Email address" size={showLess ? 'small' : 'large'} />
+      <Field.Text
+        name="email"
+        label={t('authentication.emailAddress') || 'Email address'}
+        size={showLess ? 'small' : 'large'}
+      />
 
       <Field.Text
         name="password"
-        label="Password"
-        placeholder="6+ characters"
+        label={t('authentication.password') || 'Password'}
+        placeholder={t('authentication.passwordPlaceholder') || '6+ characters'}
         size={showLess ? 'small' : 'large'}
         type={password.value ? 'text' : 'password'}
         InputProps={{
@@ -163,7 +177,7 @@ export function JwtSignUpView({ showLess }: JwtSignUpViewProps) {
         size={showLess ? 'small' : 'large'}
         loading={isSubmitting || loading}
       >
-        Continue
+        {t('authentication.continue')}
       </LoadingButton>
     </Stack>
   );

@@ -21,6 +21,8 @@ interface TriangleProps {
   shine?: Direction;
   middleText?: string;
   onClick?: () => void;
+  perpendicular?: Direction;
+  hasCircle?: boolean;
 }
 
 const TriangleDiagram: React.FC<TriangleProps> = ({
@@ -40,6 +42,8 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
   shine,
   middleText,
   onClick,
+  perpendicular,
+  hasCircle,
 }) => {
   const theme = useTheme();
 
@@ -78,6 +82,36 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
 
   return (
     <Box style={{ position: 'relative' }}>
+      {perpendicular === 'up' && (
+        <Box
+          style={{
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 300,
+          }}
+        >
+          <svg
+            width={150}
+            height={150}
+            viewBox="0 0 114.496 114.496"
+            style={{ display: 'block', margin: 'auto' }}
+          >
+            <g>
+              <g>
+                <path
+                  d="M0,104.752c0,4.037,3.271,7.309,7.308,7.309h51.158h48.722c4.037,0,7.309-3.271,7.309-7.309
+                    c0-4.039-3.271-7.31-7.309-7.31H65.775V9.745c0-4.037-3.271-7.309-7.31-7.309c-4.036,0-7.308,3.271-7.308,7.309v87.699H7.307
+                    C3.271,97.442,0,100.715,0,104.752z"
+                  fill={theme.palette.primary.main}
+                />
+              </g>
+            </g>
+          </svg>
+        </Box>
+      )}
+
       {/* Straight arrows in center using Iconify */}
       {(straightLeft || straightLeft || straightBottom) && (
         <Stack
@@ -86,15 +120,37 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
           alignItems={'center'}
           minHeight={300}
           spacing={5}
+          style={{ position: 'relative' }}
         >
+          {hasCircle && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Iconify
+                icon="game-icons:circle"
+                width={250}
+                height={250}
+                color={theme.palette.primary.main}
+              ></Iconify>
+            </Box>
+          )}
           {/* Straight Left Arrow */}
           {straightLeft && (
             <Iconify
               icon={
                 straightLeft === 'up' ? 'heroicons:arrow-up-solid' : 'heroicons:arrow-down-solid'
               }
-              width={70}
-              height={70}
+              width={120}
+              height={120}
               color={theme.palette.primary.main}
             />
           )}
@@ -105,8 +161,8 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
               icon={
                 straightRight === 'up' ? 'heroicons:arrow-up-solid' : 'heroicons:arrow-down-solid'
               }
-              width={70}
-              height={70}
+              width={120}
+              height={120}
               color={theme.palette.primary.main}
             />
           )}

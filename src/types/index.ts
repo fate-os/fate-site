@@ -143,4 +143,8 @@ export interface QuoteParameter {
   right_side_arrow?: Direction;
   left_side_arrow?: Direction;
   bottom_arrow?: Direction;
+  perpendicular?: Direction;
+  has_circle?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }

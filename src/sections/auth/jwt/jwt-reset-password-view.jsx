@@ -21,6 +21,7 @@ import { useMutation } from '@apollo/client';
 import { FORGOT_PASSWORD } from '@/graphql/mutation/AuthMutation';
 import { useState } from 'react';
 import { Alert } from '@mui/material';
+import { useTranslate } from '@/locales';
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +36,7 @@ export const ResetPasswordSchema = zod.object({
 
 export function JwtResetPasswordView() {
   const router = useRouter();
+  const { t } = useTranslate('app');
   const [errorMsg, setErrorMsg] = useState('');
 
   const defaultValues = {
@@ -75,10 +77,10 @@ export function JwtResetPasswordView() {
       <PasswordIcon sx={{ mx: 'auto' }} />
 
       <Stack spacing={1} sx={{ mt: 3, mb: 5, textAlign: 'center', whiteSpace: 'pre-line' }}>
-        <Typography variant="h5">Forgot your password?</Typography>
+        <Typography variant="h5">{t('authentication.resetPasswordTitle')}</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {`Please enter the email address associated with your account and we'll email you 6-digit code to reset your password.`}
+          {t('authentication.resetPasswordDesc')}
         </Typography>
       </Stack>
     </>
@@ -86,10 +88,15 @@ export function JwtResetPasswordView() {
 
   const renderForm = (
     <Stack spacing={3}>
-      <Field.Text autoFocus name="email" label="Email address" placeholder="example@gmail.com" />
+      <Field.Text
+        autoFocus
+        name="email"
+        label={t('authentication.emailAddress') || 'Email address'}
+        placeholder="example@gmail.com"
+      />
 
       <LoadingButton fullWidth size="large" type="submit" variant="outlined" loading={isSubmitting}>
-        Send request
+        {t('authentication.sendRequest')}
       </LoadingButton>
 
       <Link
@@ -100,7 +107,7 @@ export function JwtResetPasswordView() {
         sx={{ gap: 0.5, alignSelf: 'center', alignItems: 'center', display: 'inline-flex' }}
       >
         <Iconify width={16} icon="eva:arrow-ios-back-fill" />
-        Return to sign in
+        {t('authentication.returnToSignIn')}
       </Link>
     </Stack>
   );
