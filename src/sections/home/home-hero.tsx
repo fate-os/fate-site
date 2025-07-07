@@ -68,10 +68,8 @@ const HomeHero = () => {
               >
                 颂曰：
               </Typography>
-              <Typography variant="body1">一人为大 世界之福</Typography>
-              <Typography variant="body1">手执签筒 拔去竹木</Typography>
-              <Typography variant="body1">红黄黑白 不分上下</Typography>
-              <Typography variant="body1">东南西北 尽和为一</Typography>
+              <Typography variant="body1">一人为大世界福　手执签筒拔去竹</Typography>
+              <Typography variant="body1">红黄黑白不分明　东西南北尽和睦</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
