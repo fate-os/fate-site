@@ -16,3 +16,5 @@ npm  dev
 ```sh
 pnpm  build
 ```
+✅ Updated by Mei Zhu He on July 8, 2025.
+   Update README for deployment
