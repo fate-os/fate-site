@@ -13,11 +13,11 @@ export default async function Page({
   searchParams: Promise<{ history: string }>;
   params: Promise<{}>;
 }) {
-  const { history } = await searchParams;
+  // const { history } = await searchParams;
 
-  if (!history) {
-    return <PurchaseFirst></PurchaseFirst>;
-  }
+  // if (!history) {
+  //   return <PurchaseFirst></PurchaseFirst>;
+  // }
 
   return <DestinyView />;
 }

@@ -6,6 +6,7 @@ import { Box, Typography, useTheme, useMediaQuery, Paper, Container, Grid2 } fro
 import { useRouter } from 'next/navigation';
 import { TriangleDiagram } from '../destiny/triangle-diagram';
 import { useTranslate } from '@/locales';
+import { paths } from '@/routes/paths';
 
 function App() {
   // Generate data for years 1-60 with corresponding dollar amounts
@@ -21,7 +22,8 @@ function App() {
   const { t } = useTranslate('app');
 
   const handleToNextPage = (num: number, params?: string) => {
-    router.push(`/payment/${num}${params ? `?${params}` : ''}`);
+    router.push(`${paths.destiny}`);
+    // router.push(`/${paths.payment}/${num}${params ? `?${params}` : ''}`);
   };
 
   // Responsive SVG dimensions
