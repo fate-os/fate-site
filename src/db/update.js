@@ -5,22 +5,35 @@ const prismaClient = new PrismaClient();
 
 const updateQuote = async () => {
   try {
-    const quoteParam9 = await prismaClient.quote_parameter.create({
-      data: {
-       has_circle:true,
-       straight_left:"down"
-      },
-    });
-    const quoteParam10 = await prismaClient.quote_parameter.create({
-      data: {
-        straight_left: 'up',
-        has_circle:true,
-      },
-    });
+    // const findFirst = await prismaClient.fate_quote.findFirst({
+    //   where: {
+    //     date: moment.utc('2004-10-10 01:00:00').toDate(),
+    //     gender: 'male',
+    //     year_count: 60,
+    //   },
+    // });
+    // const deleteQuote = await prismaClient.fate_quote.delete({
+    //   where: {
+    //     id: findFirst.id,
+    //   },
+    // });
+    // const deleteParam = await prismaClient.quote_parameter.delete({
+    //   where: {
+    //     id: findFirst.quote_parameter_id,
+    //   },
+    // });
 
-    const quoteParam11 = await prismaClient.quote_parameter.create({
+    // console.log(deleteParam, '--- deleteParam ---');
+    // console.log(deleteQuote, '--- deleteQuote ---');
+
+    const quoteParam12 = await prismaClient.quote_parameter.create({
       data: {
-        perpendicular: 'up',
+        top_number: 27,
+        left_side_number: 39,
+        bottom_left_number: 51,
+        bottom_right_number: 3,
+        right_side_number: 15,
+        right_side_arrow: 'up',
       },
     });
 
@@ -28,22 +41,10 @@ const updateQuote = async () => {
     const fateQuotes = await prismaClient.fate_quote.createMany({
       data: [
         {
-          date: moment.utc('1962-10-29 13:30:00').toDate(),
+          date: moment.utc('2004-10-10 01:00:00').toDate(),
           gender: 'male',
-          year_count: 1,
-          quote_parameter_id: quoteParam9.id,
-        },
-        {
-          date: moment.utc('1840-05-10 11:30:00').toDate(),
-          gender: 'male',
-          year_count: 1,
-          quote_parameter_id: quoteParam10.id,
-        },
-        {
-          date: moment.utc('1900-04-07 01:10:00').toDate(),
-          gender: 'female',
-          year_count: 1,
-          quote_parameter_id: quoteParam11.id,
+          year_count: 60,
+          quote_parameter_id: quoteParam12.id,
         },
       ],
     });

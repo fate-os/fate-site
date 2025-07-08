@@ -316,10 +316,10 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
               <g>
                 {(() => {
                   // Position: left side of the rightSide number, inside the triangle near the right angle
-                  const arrowX = width / 2 + 90 - 32; // 32px left of number
+                  const arrowX = width / 2 + 90 - 55; // 32px left of number
                   const arrowY = height / 2 - 10; // align vertically with the number
                   const scale = 0.1; // keep bold
-                  const baseRotate = -40; // base rotation to match right triangle edge
+                  const baseRotate = -30; // base rotation to match right triangle edge
                   const rotate = rightSideArrow === 'up' ? baseRotate : baseRotate + 180; // flip for down
                   return (
                     <g
