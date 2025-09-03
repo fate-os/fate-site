@@ -28,15 +28,20 @@ const LINKS = [
     children: [
       { name: 'Terms and conditions', href: '/terms' },
       { name: 'Privacy policy', href: '/privacy-policy' },
+      { name: 'Refund policy', href: '/refund-policy' },
     ],
   },
   {
     headline: 'Contact',
     children: [
       {
-        name: 'contact@fate-os.com',
-        href: 'mailto:contact@fate-os.com?subject=[Contact]',
+        name: 'Contact us',
+        href: '/contact-us',
       },
+      // {
+      //   name: 'contact@fate-os.com',
+      //   href: 'mailto:contact@fate-os.com?subject=[Contact]',
+      // },
     ],
   },
 ];
@@ -83,10 +88,7 @@ export function Footer({ layoutQuery, sx }) {
                 fontWeight: 400,
                 [theme.breakpoints.up(layoutQuery)]: { mx: 'unset' },
               }}
-            >
-              The world's first metaphysical platform empowering you to understand and design your
-              own destiny.
-            </Typography>
+            ></Typography>
           </Grid>
 
           <Grid {...{ xs: 12, md: 8 }}>
@@ -153,7 +155,9 @@ export function HomeFooter({ sx }) {
     >
       <Container>
         <Logo />
-
+        <Box sx={{ my: 2 }}>
+          <TermsAcceptance></TermsAcceptance>
+        </Box>
         <Box sx={{ typography: 'caption' }}>© All rights reserved.</Box>
       </Container>
     </Box>

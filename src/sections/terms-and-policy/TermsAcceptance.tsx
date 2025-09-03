@@ -8,7 +8,7 @@ type TermsAcceptanceProps = {
 const TermsAcceptance: React.FC<TermsAcceptanceProps> = () => {
   return (
     <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 2 }}>
-      By proceeding, you acknowledge that you have read and agree to our{' '}
+      By proceeding, you acknowledge that you have read and agree to our <br />
       <Link href="/terms" color="primary" underline="hover">
         Terms and Conditions
       </Link>{' '}

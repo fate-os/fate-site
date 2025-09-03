@@ -4,7 +4,7 @@ import Terms from 'src/sections/terms-and-policy/Terms';
 export const metadata = { title: `Terms & Conditions | ${CONFIG.site.name}` };
 
 const page = () => {
-  return <></>;
+  return <Terms></Terms>;
 };
 
 export default page;

@@ -4,7 +4,7 @@ import { CONFIG } from '@/config-global';
 export const metadata = { title: `Privacy policy | ${CONFIG.site.name}` };
 
 const page = () => {
-  return <></>;
+  return <Policy></Policy>;
 };
 
 export default page;

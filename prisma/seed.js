@@ -5,7 +5,6 @@ import moment from 'moment';
 //   "seed": "node prisma/seed.js"
 // },
 
-
 const prismaClient = new PrismaClient();
 
 const seedQuote = async () => {
@@ -47,13 +46,13 @@ const seedQuote = async () => {
         bottom_right_number: 56,
         bottom_left_number: 8,
         left_side_number: 20,
-        left_side_arrow:"up"
+        left_side_arrow: 'up',
       },
     });
 
     const quoteParam6 = await prismaClient.quote_parameter.create({
       data: {
-        straight_bottom:"both_left_and_right"
+        straight_bottom: 'both_left_and_right',
       },
     });
     const quoteParam7 = await prismaClient.quote_parameter.create({
@@ -68,20 +67,31 @@ const seedQuote = async () => {
     });
     const quoteParam9 = await prismaClient.quote_parameter.create({
       data: {
-       has_circle:true,
-       straight_left:"down"
+        has_circle: true,
+        straight_left: 'down',
       },
     });
     const quoteParam10 = await prismaClient.quote_parameter.create({
       data: {
         straight_left: 'up',
-        has_circle:true,
+        has_circle: true,
       },
     });
 
     const quoteParam11 = await prismaClient.quote_parameter.create({
       data: {
         perpendicular: 'up',
+      },
+    });
+
+    const quoteParam12 = await prismaClient.quote_parameter.create({
+      data: {
+        top_number: 27,
+        left_side_number: 39,
+        bottom_left_number: 51,
+        bottom_right_number: 3,
+        right_side_number: 15,
+        right_side_arrow: 'up',
       },
     });
 
@@ -154,13 +164,18 @@ const seedQuote = async () => {
           year_count: 1,
           quote_parameter_id: quoteParam11.id,
         },
+        {
+          date: moment.utc('2004-10-10 01:00:00').toDate(),
+          gender: 'male',
+          year_count: 60,
+          quote_parameter_id: quoteParam12.id,
+        },
       ],
     });
 
     console.log('Seed data created successfully');
-  
-    console.log('Fate quotes created:', fateQuotes.count);
 
+    console.log('Fate quotes created:', fateQuotes.count);
   } catch (error) {
     console.error('Error seeding data:', error);
     throw new Error(error);
