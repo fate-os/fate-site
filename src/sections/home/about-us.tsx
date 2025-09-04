@@ -30,18 +30,18 @@ const AboutUs = () => {
           <Grid2 container spacing={2}>
             <Grid2 size={{ xs: 12, md: 8 }}>
               <Stack spacing={3}>
-                <Grid2 container spacing={5}>
-                  <Grid2 size={{ md: 3, sm: 4, xs: 12 }}>
+                <Grid2 container spacing={{ xs: 2, md: 5 }}>
+                  <Grid2 size={{ md: 4, sm: 5, xs: 12 }}>
                     <Image
                       alt="Mei Zhu He – Founder of Fate OS Inc."
-                      src="/assets/images/founder.png"
-                      width={145}
+                      src="/assets/images/founder-1.jpeg"
+                      width={200}
                       height={195}
                       imageSx={{ borderRadius: 1 }}
                     ></Image>
                   </Grid2>
 
-                  <Grid2 mt={3} size={{ md: 9, sm: 8, xs: 12 }}>
+                  <Grid2 mt={{ xs: 0, md: 3 }} size={{ md: 8, sm: 7, xs: 12 }}>
                     <Stack spacing={3} mt={3}>
                       <Typography variant="h4" fontWeight="bold">
                         {t('main.aboutTitle')}
