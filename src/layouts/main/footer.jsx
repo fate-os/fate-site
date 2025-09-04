@@ -11,7 +11,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { Logo } from 'src/components/logo';
 import { SocialIcon } from 'src/components/iconify';
-import TermsAcceptance from 'src/sections/terms-and-policy/TermsAcceptance';
+import TermsAcceptance from 'src/sections/legals/TermsAcceptance';
 
 // ----------------------------------------------------------------------
 
@@ -26,9 +26,10 @@ const LINKS = [
   {
     headline: 'Legal',
     children: [
-      { name: 'Terms and conditions', href: '/terms' },
-      { name: 'Privacy policy', href: '/privacy-policy' },
-      { name: 'Refund policy', href: '/refund-policy' },
+      { name: 'Terms and conditions', href: '/legal/terms' },
+      { name: 'Privacy policy', href: '/legal/privacy-policy' },
+      { name: 'Refund policy', href: '/legal/refund-policy' },
+      { name: 'Disclaimer', href: '/legal/disclaimer' },
     ],
   },
   {
@@ -88,7 +89,10 @@ export function Footer({ layoutQuery, sx }) {
                 fontWeight: 400,
                 [theme.breakpoints.up(layoutQuery)]: { mx: 'unset' },
               }}
-            ></Typography>
+            >
+              Fate Os helps you uncover the destiny of a person based on their name and birthday
+              date. Explore insights and predictions to understand the journey of life better
+            </Typography>
           </Grid>
 
           <Grid {...{ xs: 12, md: 8 }}>

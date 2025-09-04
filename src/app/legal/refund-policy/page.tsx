@@ -1,4 +1,4 @@
-import RefundPolicy from '@/sections/terms-and-policy/RefundPolicy';
+import RefundPolicy from '@/sections/legals/RefundPolicy';
 import { CONFIG } from '@/config-global';
 
 export const metadata = { title: `Refunc policy | ${CONFIG.site.name}` };
