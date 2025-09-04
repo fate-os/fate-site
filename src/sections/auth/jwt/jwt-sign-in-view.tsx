@@ -29,7 +29,7 @@ import { accountInitialize } from '@/store/features/auth.reducer';
 import { useAppDispatch } from '@/store/hooks';
 import Cookies from 'js-cookie';
 import { ACCESS_TOKEN } from '@/config-global';
-import TermsAcceptance from '@/sections/terms-and-policy/TermsAcceptance';
+import TermsAcceptance from '@/sections/legals/TermsAcceptance';
 import { useTranslate } from '@/locales';
 
 // ----------------------------------------------------------------------
