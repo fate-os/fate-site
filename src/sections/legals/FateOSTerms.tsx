@@ -164,8 +164,12 @@ const FateOSTerms: React.FC = () => {
           8. Governing Law and Dispute Resolution
         </Typography>
         <Typography variant="body1" paragraph>
-          This section heading is present, but the specific terms under it are not visible in the
-          image.
+          These Terms of Service shall be governed by and construed in accordance with the laws of
+          the State of Delaware, United States, without regard to conflict of law principles.
+        </Typography>
+        <Typography variant="body1" paragraph>
+          Any dispute arising from these Terms shall be resolved exclusively by the state and
+          federal courts located in Delaware. You consent to the jurisdiction of such courts.
         </Typography>
       </Box>
 
@@ -174,11 +178,10 @@ const FateOSTerms: React.FC = () => {
           9. Disclaimer
         </Typography>
         <Typography variant="body1" paragraph>
-          The services are provided "as is" and "as available," with no warranties of
-          merchantability, fitness for a particular purpose, or non-infringement.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          Services are not guaranteed to be error-free, uninterrupted, or to meet all expectations.
+          Our are provided on an "as is" and "as available" basis. We make no warranties, express or
+          implied, including but not limited to, warranties of merchantability, fitness for a
+          particular purpose, or non-infringement. We do not warrant that the services will be
+          uninterrupted or error-free, uninterrupted, or meet all of your expectations.
         </Typography>
       </Box>
 
