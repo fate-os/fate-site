@@ -28,6 +28,21 @@ const nextConfig = {
   ...(isStaticExport === 'true' && {
     output: 'export',
   }),
+  async headers() {
+    return [
+      {
+        source: '/checkout',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' }, // optional; CSP is preferred
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "frame-ancestors 'self' https://secureacceptance.cybersource.com https://testsecureacceptance.cybersource.com https://secureacceptance.merchant-services.bankofamerica.com https://testsecureacceptance.merchant-services.bankofamerica.com",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

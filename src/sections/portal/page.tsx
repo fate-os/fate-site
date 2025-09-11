@@ -22,8 +22,8 @@ function App() {
   const { t } = useTranslate('app');
 
   const handleToNextPage = (num: number, params?: string) => {
-    router.push(`${paths.destiny}`);
-    // router.push(`/${paths.payment}/${num}${params ? `?${params}` : ''}`);
+    // router.push(`${paths.destiny}`);
+    router.push(`${paths.payment}/${num}${params ? `?${params}` : ''}`);
   };
 
   // Responsive SVG dimensions
