@@ -47,11 +47,7 @@ export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogPr
       <DialogTitle>Complete Your Purchase </DialogTitle>
 
       <DialogContent sx={{ width: '100%' }}>
-        {loading ? (
-          <ProgressLoader></ProgressLoader>
-        ) : (
-          <SecureAcceptanceEmbedded amount="100" currency="usd" reference="1234567890" />
-        )}
+        {loading ? <ProgressLoader></ProgressLoader> : <CheckoutPage />}
       </DialogContent>
 
       <DialogActions
@@ -71,106 +67,55 @@ export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogPr
   );
 }
 
-type SecureAcceptanceProps = { amount: string; currency: string; reference: string };
-
-export default function SecureAcceptanceEmbedded({
-  amount,
-  currency,
-  reference,
-}: SecureAcceptanceProps) {
+export default function CheckoutPage() {
   const formRef = useRef<HTMLFormElement>(null);
-  const [isFormReady, setIsFormReady] = useState(false);
 
-  // Pick the endpoint (test/prod + domain)
-  const env = process.env.NEXT_PUBLIC_SA_ENV || process.env.SA_ENV || 'test';
-  const gw = process.env.NEXT_PUBLIC_SA_GATEWAY || process.env.SA_GATEWAY || 'cybersource';
+  useEffect(() => {
+    const buildForm = async () => {
+      const res = await fetch('/api/sa/build', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: '49.99',
+          currency: 'USD',
+          reference: 'ORDER-' + Date.now(),
+        }),
+      });
 
+      const { fields } = await res.json();
+      const form = formRef.current!;
+      form.innerHTML = ''; // clear previous
+
+      Object.entries(fields).forEach(([name, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = String(value);
+        form.appendChild(input);
+      });
+
+      form.submit();
+    };
+
+    buildForm();
+  }, []);
+
+  const env = process.env.NEXT_PUBLIC_SA_ENV || 'test';
   const endpoint =
     env === 'prod'
-      ? gw === 'bofa'
-        ? 'https://secureacceptance.merchant-services.bankofamerica.com/pay'
-        : 'https://secureacceptance.cybersource.com/pay'
-      : gw === 'bofa'
-        ? 'https://testsecureacceptance.merchant-services.bankofamerica.com/pay'
-        : 'https://testsecureacceptance.cybersource.com/pay';
-
-  console.log(endpoint);
+      ? 'https://secureacceptance.merchant-services.bankofamerica.com/silent/embedded/token/create'
+      : 'https://testsecureacceptance.merchant-services.bankofamerica.com/silent/embedded/token/create';
 
   return (
     <div>
+      <h1>Checkout</h1>
       <iframe
         name="sa_iframe"
         id="sa_iframe"
         title="Secure Acceptance"
-        style={{ width: '100%', minHeight: 720, border: '0' }}
-        // 3-D Secure challenges may need ~390x400 at minimum
+        style={{ width: '100%', minHeight: 500, border: '0' }}
       />
-      {/* This form gets its signed fields from our API route */}
-      <form ref={formRef} method="post" target="sa_iframe" action={endpoint}>
-        {/* Required basic fields are injected below via API */}
-        {/* We fetch and render hidden inputs from /api/sa/build */}
-      </form>
-      <ScriptInjector
-        amount={amount}
-        currency={currency}
-        reference={reference}
-        onFormReady={() => setIsFormReady(true)}
-      />
+      <form ref={formRef} method="post" target="sa_iframe" action={endpoint}></form>
     </div>
   );
-}
-
-type ScriptInjectorProps = SecureAcceptanceProps & {
-  onFormReady: () => void;
-};
-
-function ScriptInjector({ amount, currency, reference, onFormReady }: ScriptInjectorProps) {
-  // Fetch signed fields and inject as hidden inputs before submit
-  useEffect(() => {
-    const f = async () => {
-      try {
-        const res = await fetch('/api/sa/build', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount, currency, reference }),
-        });
-
-        if (!res.ok) {
-          throw new Error(`API call failed: ${res.status} ${res.statusText}`);
-        }
-
-        const { fields } = await res.json();
-        console.log('Received fields from API:', fields);
-
-        const form = document.querySelector("form[action*='secureacceptance']") as HTMLFormElement;
-        if (!form) {
-          console.error('Form not found');
-          return;
-        }
-
-        // Clear previous inputs
-        form.querySelectorAll('input').forEach((n) => n.remove());
-
-        // Add new fields
-        Object.entries(fields).forEach(([name, value]) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = name;
-          input.value = String(value);
-          form.appendChild(input);
-          console.log(`Added field: ${name} = ${value}`);
-        });
-
-        // Notify that form is ready and submit
-        onFormReady();
-        form.submit();
-      } catch (error) {
-        console.error('Error setting up payment form:', error);
-        toast.error('Failed to initialize payment form. Please try again.');
-      }
-    };
-    f();
-  }, [amount, currency, reference, onFormReady]);
-
-  return null;
 }

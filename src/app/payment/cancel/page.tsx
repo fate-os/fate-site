@@ -5,9 +5,45 @@ import PaymentCancel from '@/sections/payment/view/payment-cancel';
 import { VerifyPaymentResponse } from '@/types';
 import { notFound } from 'next/navigation';
 
-const page = async ({ searchParams }: { searchParams: Promise<{ session_id: string }> }) => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    session_id?: string;
+    decision?: string;
+    reason_code?: string;
+    transaction_id?: string;
+    reference_number?: string;
+  }>;
+}) => {
   const searchparam = await searchParams;
 
+  // Handle Bank of America Secure Acceptance cancel response
+  if (searchparam.decision) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h1>Payment Cancelled</h1>
+        <p>You have cancelled the payment process.</p>
+        {searchparam.reference_number && <p>Reference: {searchparam.reference_number}</p>}
+        <button
+          onClick={() => (window.location.href = '/')}
+          style={{
+            padding: '10px 20px',
+            marginTop: '20px',
+            backgroundColor: '#1976d2',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Return to Home
+        </button>
+      </div>
+    );
+  }
+
+  // Handle Stripe cancel response (existing logic)
   if (!searchparam.session_id) {
     return notFound();
   }

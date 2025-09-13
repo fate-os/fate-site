@@ -1,23 +1,31 @@
-// app/api/sa/notify/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { sign } from '@/lib/saSign';
+import { FateOsClient } from '@/db/prisma';
+
+const prisma = FateOsClient;
 
 export async function POST(req: NextRequest) {
   const form = await req.formData();
-  const secret = process.env.SA_SECRET_KEY!;
   const data: Record<string, string> = {};
-  form.forEach((v, k) => {
-    data[k] = String(v);
-  });
+  form.forEach((v, k) => (data[k] = String(v)));
 
-  const signedNames = (data.signed_field_names || '').split(',').filter(Boolean);
-  const expectedSig = sign(data, signedNames, secret);
+  const secret = process.env.SA_SECRET_KEY!;
+  const signedFields = (data.signed_field_names || '').split(',').filter(Boolean);
+  const expectedSig = sign(data, signedFields, secret);
 
-  const valid = expectedSig === data.signature;
-  if (!valid) return NextResponse.json({ ok: false }, { status: 400 });
+  if (expectedSig !== data.signature) {
+    return NextResponse.json({ ok: false, error: 'Invalid signature' }, { status: 400 });
+  }
 
-  // Typical success check (reason_code 100 == OK)
-  const success = data.decision === 'ACCEPT' || data.reason_code === '100';
-  // TODO: mark order paid based on reference_number / transaction_id, etc.
-  return NextResponse.json({ ok: true, success, data });
+  // await prisma.transaction.create({
+  //   data: {
+  //     reference: data.reference_number || '',
+  //     amount: parseFloat(data.amount || '0'),
+  //     currency: data.currency || 'USD',
+  //     paymentToken: data.payment_token || '',
+  //     decision: data.decision || '',
+  //   },
+  // });
+
+  return NextResponse.json({ ok: true });
 }
