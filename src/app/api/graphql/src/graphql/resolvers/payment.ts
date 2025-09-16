@@ -16,10 +16,25 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
   try {
     const { years, shine } = arg;
 
+    // Validate input parameters
+    if (!years || years <= 0 || years > 100) {
+      return {
+        success: false,
+        message: 'Invalid years parameter. Must be between 1 and 100.',
+      };
+    }
+
+    if (typeof shine !== 'boolean') {
+      return {
+        success: false,
+        message: 'Invalid shine parameter. Must be a boolean value.',
+      };
+    }
+
     if (!cont.account?.account) {
       return {
         success: false,
-        message: 'Unable to find user, try again',
+        message: 'Unable to find user, please log in and try again',
       };
     }
     const findCurrentUser = await FateOsClient.user.findUnique({
@@ -29,7 +44,7 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
     if (!findCurrentUser) {
       return {
         success: false,
-        message: 'Unable to find user, try again',
+        message: 'User not found. Please try logging in again.',
       };
     }
 
@@ -72,7 +87,7 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
     });
     return {
       success: true,
-      message: 'Getting lifetime subscription successfully',
+      message: 'Payment session created successfully',
       result: session.client_secret,
     };
 
@@ -85,7 +100,11 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
     //   },
     // });
   } catch (error: any) {
-    throw new GraphQLError(error.message);
+    console.error('Unexpected error in createSessionForSubscription:', error);
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+    };
   }
 };
 
@@ -93,16 +112,18 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
   try {
     const { sessionId } = arg;
 
+    // Validate input parameters
+    if (!sessionId || typeof sessionId !== 'string') {
+      return {
+        success: false,
+        message: 'Valid session ID is required',
+      };
+    }
+
     if (!cont.account?.account) {
       return {
         success: false,
-        message: 'Unable to find user, try again',
-      };
-    }
-    if (!sessionId) {
-      return {
-        success: false,
-        message: 'Session is required',
+        message: 'Unable to find user, please log in and try again',
       };
     }
 
@@ -113,7 +134,7 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
     if (!session) {
       return {
         success: false,
-        message: 'False',
+        message: 'Payment session not found',
         result: {
           status: 'fail',
         },
@@ -129,12 +150,10 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
       },
     });
 
-    console.log(existingHistory, 'existingHistory');
-
     if (!existingHistory) {
       return {
         success: false,
-        message: 'False',
+        message: 'Payment verification failed. Please contact support.',
         result: {
           status: 'error',
         },
@@ -143,7 +162,7 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
 
     return {
       success: true,
-      message: 'Getting payment status',
+      message: 'Payment status retrieved successfully',
       result: {
         status: session.payment_status,
         amount: session?.amount_total ? session?.amount_total / 100 : 0,
@@ -151,8 +170,11 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
       },
     };
   } catch (error: any) {
-    console.log(error);
-    throw new GraphQLError(error.message);
+    console.error('Unexpected error in verifyPaymentBySession:', error);
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+    };
   }
 };
 
@@ -164,27 +186,64 @@ const checkUserPurchase = async (
   try {
     const { years, shine } = arg;
 
-    if (!cont.account?.account) {
+    // Validate input parameters
+    if (!years || years <= 0 || years > 100) {
       return {
         success: false,
-        message: 'Unable to find user, try again',
+        message: 'Invalid years parameter. Must be between 1 and 100.',
       };
     }
 
-    // Calculate the expected amount based on years and shine
-    const expectedAmount = shine ? 45 * 100 : years * 100;
+    if (typeof shine !== 'boolean') {
+      return {
+        success: false,
+        message: 'Invalid shine parameter. Must be a boolean value.',
+      };
+    }
+
+    if (!cont.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, please log in and try again',
+      };
+    }
+
+    // Check if user is super admin - if so, bypass purchase requirement
+    if (cont.account.account.super_admin === true) {
+      return {
+        success: true,
+        message: 'Super admin access granted',
+        result: {
+          has_purchased: true,
+          history_id: 'admin-bypass',
+          paid_amount: 0,
+          year_count: shine ? 60 : years,
+        },
+      };
+    }
 
     // Find payment history for this user with matching amount and shine logic
     const paymentHistory = await FateOsClient.payment_history.findFirst({
       where: {
         user_id: cont.account.account.id,
-        paid_amount: expectedAmount,
+
         year_count: shine ? 60 : years,
       },
       orderBy: {
         created_at: 'desc',
       },
     });
+
+    // console.log(
+    //   await FateOsClient.payment_history.findMany({
+    //     where: {
+    //       user_id: cont.account.account.id,
+    //     },
+    //     orderBy: {
+    //       created_at: 'desc',
+    //     },
+    //   })
+    // );
 
     if (paymentHistory) {
       return {
@@ -210,8 +269,13 @@ const checkUserPurchase = async (
       },
     };
   } catch (error: any) {
-    console.log(error);
-    throw new GraphQLError(error.message);
+    console.error('Unexpected error in checkUserPurchase:', error);
+
+    // Return a user-friendly error instead of throwing
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+    };
   }
 };
 

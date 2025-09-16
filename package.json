@@ -21,7 +21,8 @@
     "postinstall": "prisma migrate deploy && prisma db push && prisma generate",
     "seed": "node prisma/seed.js",
     "empty": "node src/db/empty.js",
-    "update:db": "node src/db/update.js"
+    "update:db": "node src/db/update.js",
+    "db:upgrade": "node src/db/upgrade.js"
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",

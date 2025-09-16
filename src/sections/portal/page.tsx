@@ -7,8 +7,11 @@ import { useRouter } from 'next/navigation';
 import { TriangleDiagram } from '../destiny/triangle-diagram';
 import { useTranslate } from '@/locales';
 import { paths } from '@/routes/paths';
+import { useAppSelector } from '@/store/hooks';
 
 function App() {
+  const { account } = useAppSelector((s) => s.auth);
+
   // Generate data for years 1-60 with corresponding dollar amounts
   const data = Array.from({ length: 60 }, (_, i) => ({
     year: i + 1,
@@ -22,6 +25,10 @@ function App() {
   const { t } = useTranslate('app');
 
   const handleToNextPage = (num: number, params?: string) => {
+    if (account?.super_admin) {
+      router.push(`${paths.destiny}`);
+      return;
+    }
     // router.push(`${paths.destiny}`);
     router.push(`${paths.payment}/${num}${params ? `?${params}` : ''}`);
   };

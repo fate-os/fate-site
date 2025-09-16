@@ -43,7 +43,7 @@ if (process.env?.NODE_ENV?.toLowerCase() === 'production') {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
-    console.log(body, '---------body------');
+
     const sig = req.headers.get('stripe-signature');
 
     if (!sig) {
@@ -62,8 +62,6 @@ export async function POST(req: NextRequest) {
     // Handle checkout.session.completed event
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-
-      console.log(session, '---------session------');
 
       // Handle payment mode (one-time payments) - this matches the payment.ts resolver
       if (session.mode === 'payment' && session.customer_email) {

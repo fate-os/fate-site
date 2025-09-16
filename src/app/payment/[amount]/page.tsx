@@ -3,7 +3,7 @@ import { PaymentView } from 'src/sections/payment/view';
 import { getClient } from '@/lib/apolloClientServer';
 import { CHECK_USER_PURCHASE } from '@/graphql/query/Payment';
 import { CheckUserPurchaseResponse } from '@/types';
-import { View403 } from '@/sections/error';
+import { View403, View500 } from '@/sections/error';
 import { redirect } from 'next/navigation';
 import { paths } from '@/routes/paths';
 
@@ -18,24 +18,65 @@ export default async function Page({
   searchParams: Promise<{ shine?: string }>;
   params: Promise<{ amount: string }>;
 }) {
-  const isShine = (await searchParams).shine;
-  const { amount } = await params;
+  // Safely parse search params and route params
+  const searchParamsData = await searchParams;
+  const paramsData = await params;
 
-  const client = await getClient();
-  const { data } = await client.query<CheckUserPurchaseResponse>({
-    query: CHECK_USER_PURCHASE,
-    variables: {
-      years: parseInt(amount),
-      shine: isShine === 'true',
-    },
-  });
+  const isShine = searchParamsData?.shine;
+  const { amount } = paramsData;
 
-  if (!data?.checkUserPurchase?.success) {
-    return <View403 subTitle={data?.checkUserPurchase?.message}></View403>;
+  // Validate amount parameter
+  if (!amount || isNaN(parseInt(amount))) {
+    return <View403 subTitle="Invalid payment amount specified." />;
+  }
+
+  // Initialize Apollo client with error handling
+  let client;
+  try {
+    client = await getClient();
+  } catch (clientError) {
+    console.error('Failed to initialize Apollo client:', clientError);
+    return <View500 subTitle="Failed to connect to server. Please try again later." />;
+  }
+
+  // Execute GraphQL query with comprehensive error handling
+  let data: CheckUserPurchaseResponse;
+  try {
+    const result = await client.query<CheckUserPurchaseResponse>({
+      query: CHECK_USER_PURCHASE,
+      variables: {
+        years: parseInt(amount),
+        shine: isShine === 'true',
+      },
+      errorPolicy: 'all', // Return partial data even if there are errors
+      fetchPolicy: 'network-only', // Always fetch fresh data
+    });
+    data = result.data;
+  } catch (queryError) {
+    console.error('GraphQL query error:', queryError);
+
+    // Check if it's a network error
+    if (queryError instanceof Error && queryError.message.includes('Network')) {
+      return <View500 subTitle="Network error. Please check your connection and try again." />;
+    }
+
+    // Generic database/server error
+    return <View500 subTitle="Server error occurred. Please try again later." />;
+  }
+
+  // Handle GraphQL response errors
+  if (!data?.checkUserPurchase) {
+    console.error('No purchase data received from server');
+    return <View500 subTitle="Failed to retrieve purchase information. Please try again." />;
+  }
+
+  if (!data.checkUserPurchase.success) {
+    return <View403 subTitle={data.checkUserPurchase.message || 'Access denied.'} />;
   }
 
   // If user has purchased, redirect to destiny with history ID
-  if (data?.checkUserPurchase?.result.has_purchased && data?.checkUserPurchase?.result.history_id) {
+  // This must be outside of any try-catch block
+  if (data.checkUserPurchase.result?.has_purchased && data.checkUserPurchase.result?.history_id) {
     const destinyUrl = `${paths.destiny}?history=${data.checkUserPurchase.result.history_id}${isShine === 'true' ? '&shine=true' : ''}`;
     redirect(destinyUrl);
   }
