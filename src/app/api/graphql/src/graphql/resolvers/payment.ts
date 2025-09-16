@@ -65,17 +65,6 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
       };
     }
 
-    // const findFateQuote = await FateOsClient.quote_parameter.findFirst({
-    //   select: {
-    //     id: true,
-    //   },
-    //   where: { shine: shine ? 'up' : undefined },
-    // });
-    const create_coupon = await stripe.coupons.create({
-      percent_off: 100,
-      duration: 'once', // Applies only to first invoice
-      max_redemptions: 2,
-    });
     const priceId = await stripe.prices.create({
       currency: 'usd',
       unit_amount: years * 100 * 100,
