@@ -30,15 +30,23 @@ type CheckUserPurchase {
     paid_amount: Float
     year_count: Int
 }
+type ApplyCouponResponse {
+    success: Boolean!
+    message: String
+    coupon:CouponObject
+}
+
 
 type Query {
    
-    createSession(years:Int,shine:Boolean):SessionDetails
+    createSession(years:Int,shine:Boolean,couponId:String):SessionDetails
     verifyPayment(sessionId:String):VerifyDetails
     checkUserPurchase(years:Int,shine:Boolean):CheckUserPurchaseDetails
 }
 
-
+type Mutation {
+    applyCoupon(code:String!):ApplyCouponResponse
+}
 
 `;
 

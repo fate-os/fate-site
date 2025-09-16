@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_STRIPE_SESSION = gql`
-  query CreateSession($years: Int, $shine: Boolean) {
-    createSession(years: $years, shine: $shine) {
+  query CreateSession($years: Int, $shine: Boolean, $couponId: String) {
+    createSession(years: $years, shine: $shine, couponId: $couponId) {
       success
       result
       message

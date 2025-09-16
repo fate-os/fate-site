@@ -46,6 +46,7 @@ export type ForgotArg = {
 export type SessionArg = {
   years: number;
   shine?: boolean;
+  couponId?: string;
 };
 
 export type VerifyPaymentArg = {
@@ -87,4 +88,15 @@ export type UserListQuerykArg = {
   firstName: string;
   lastName: string;
   email: string;
+};
+
+export type AdminCouponArg = {
+  name: string;
+  percentOff: number;
+  limit: number;
+  subscriptionFor?: [{ id: string }];
+};
+
+export type CouponApplyArg = {
+  code: string;
 };

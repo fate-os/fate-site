@@ -25,13 +25,15 @@ type PaymentDialogProps = {
   open: boolean;
   years: string;
   isShine: boolean;
+  couponId?: string;
 };
 
-export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogProps) {
+export function PaymentDialog({ onClose, open, years, isShine, couponId }: PaymentDialogProps) {
   const [getSession, { loading }] = useLazyQuery<SubscriptionSessionResponse>(GET_STRIPE_SESSION, {
     variables: {
       years: Number(years),
       shine: isShine,
+      couponId: couponId,
     },
   });
 
@@ -93,7 +95,7 @@ export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogPr
           bgcolor: (t) => t.palette.background.default,
         }}
       >
-        <Button color="error" variant="outlined" onClick={onClose}>
+        <Button color="error" variant="outlined" onClick={onClose} disabled={loading}>
           Cancel
         </Button>
       </DialogActions>

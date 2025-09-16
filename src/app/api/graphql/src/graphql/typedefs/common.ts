@@ -19,6 +19,22 @@ const typeDefs = `#graphql
     created_at: Date
   }
 
+  type CouponObject {
+    id: String
+    object: String
+    amount_off: Float
+    created: Int
+    currency: String
+    duration: String
+    duration_in_months: Int
+    livemode: Boolean
+    max_redemptions: String
+    name: String
+    percent_off: Float
+    redeem_by: String
+    times_redeemed: Int
+    valid: Boolean
+  }
 
 
 

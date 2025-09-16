@@ -9,12 +9,62 @@ import { Iconify } from 'src/components/iconify';
 import { PaymentDialog } from './payment-dialog';
 import { useState } from 'react';
 import { useTranslate } from '@/locales';
+import { useForm } from 'react-hook-form';
+import { z as zod } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Field, Form } from '@/components/hook-form';
+import { APPLY_COUPON } from '@/graphql/mutation/payment';
+import { useMutation } from '@apollo/client';
+import { toast } from 'src/components/snackbar';
+import { Alert } from '@mui/material';
+import { applyDiscount } from '@/utils/parser';
 
 // ----------------------------------------------------------------------
+
+export const PaymentSchema = zod.object({
+  code: zod.string().min(1, { message: 'Code is required!' }),
+});
 
 export function PaymentSummary({ years, isShine, sx, ...other }) {
   const [continuePayment, setContinuePayment] = useState(0);
   const { t } = useTranslate('app');
+
+  const [appliedCoupon, setAppliedCoupon] = useState();
+
+  const defaultValues = {
+    code: '',
+  };
+  const [applyCoupon, { loading }] = useMutation(APPLY_COUPON);
+
+  const methods = useForm({
+    resolver: zodResolver(PaymentSchema),
+    defaultValues,
+  });
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = handleSubmit(async (submitData) => {
+    try {
+      const { data } = await applyCoupon({
+        variables: {
+          code: submitData.code,
+        },
+      });
+
+      if (data?.applyCoupon?.success) {
+        setAppliedCoupon(data?.applyCoupon?.coupon);
+        toast.success(data?.applyCoupon?.message);
+
+        return;
+      }
+      toast.error(data?.applyCoupon?.message);
+    } catch (error) {
+      toast.error(error?.message);
+    }
+  });
 
   const totalAmount = years * 100;
 
@@ -60,6 +110,47 @@ export function PaymentSummary({ years, isShine, sx, ...other }) {
             <Typography variant="subtitle1">${totalAmount}*</Typography>
           </Stack>
 
+          <Box>
+            <Form methods={methods} onSubmit={onSubmit}>
+              <Stack direction={'row'} spacing={2} alignItems={'center'}>
+                <Field.Text
+                  name="code"
+                  label="Promo/Coupon code"
+                  placeholder="Enter Promo/Coupon code"
+                  disabled={Boolean(appliedCoupon)}
+                  size="small"
+                ></Field.Text>
+                <Box>
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    type="submit"
+                    size="small"
+                    loading={isSubmitting || loading}
+                    disabled={Boolean(appliedCoupon)}
+                  >
+                    Apply
+                  </Button>
+                </Box>
+              </Stack>
+            </Form>
+            {appliedCoupon && (
+              <Alert severity="success" sx={{ my: 2 }} variant="outlined">
+                You've received a {appliedCoupon.percent_off}% discount using your{' '}
+                {appliedCoupon.name} coupon code.
+              </Alert>
+            )}
+          </Box>
+
+          {appliedCoupon && (
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Typography variant="subtitle1">Total billed after discount</Typography>
+              <Typography variant="subtitle1">
+                $ {applyDiscount(totalAmount.toFixed(2), appliedCoupon?.percent_off || 0)}
+              </Typography>
+            </Stack>
+          )}
+
           <Divider sx={{ borderStyle: 'dashed' }} />
         </Stack>
 
@@ -91,6 +182,7 @@ export function PaymentSummary({ years, isShine, sx, ...other }) {
           onClose={() => setContinuePayment('')}
           years={continuePayment}
           isShine={isShine}
+          couponId={appliedCoupon ? appliedCoupon.id : undefined}
         ></PaymentDialog>
       )}
     </Box>

@@ -1,6 +1,6 @@
 import { AppContext } from '../../types';
 import { GraphQLError } from 'graphql';
-import { SessionArg, VerifyPaymentArg } from '../../types/req';
+import { CouponApplyArg, SessionArg, VerifyPaymentArg } from '../../types/req';
 import { FateOsClient } from '@/db/prisma';
 import { stripe } from '@/db/stripe';
 import { CONFIG } from '@/config-global';
@@ -14,7 +14,7 @@ const acceptedCurrency = ['usd'];
  */
 const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppContext) => {
   try {
-    const { years, shine } = arg;
+    const { years, shine, couponId } = arg;
 
     // Validate input parameters
     if (!years || years <= 0 || years > 100) {
@@ -37,6 +37,23 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
         message: 'Unable to find user, please log in and try again',
       };
     }
+
+    if (couponId) {
+      const findCoupon = await stripe.coupons.retrieve(couponId);
+      if (!findCoupon) {
+        return {
+          success: false,
+          message: `The coupon or promotional code you entered is either invalid or has expired.`,
+        };
+      }
+      if (!findCoupon.valid) {
+        return {
+          success: false,
+          message: `The coupon or promotional code you entered is either invalid or has expired.`,
+        };
+      }
+    }
+
     const findCurrentUser = await FateOsClient.user.findUnique({
       where: { id: cont.account?.account.id },
     });
@@ -73,7 +90,13 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
           quantity: 1,
         },
       ],
-      discounts: [{ coupon: create_coupon.id }],
+      discounts: couponId
+        ? [
+            {
+              coupon: couponId, // Coupon only applies to initial payment
+            },
+          ]
+        : undefined,
 
       mode: 'payment',
       return_url: `${YOUR_DOMAIN}/payment/success/?session_id={CHECKOUT_SESSION_ID}`,
@@ -278,12 +301,66 @@ const checkUserPurchase = async (
     };
   }
 };
+const applyCouponCode = async (_: any, arg: CouponApplyArg, cont: AppContext) => {
+  try {
+    if (!cont.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, try again',
+      };
+    }
+    const { code } = arg;
+
+    if (!code) {
+      return {
+        success: false,
+        message: `code is required`,
+      };
+    }
+
+    const coupons = await stripe.coupons.list();
+
+    if (!coupons?.data.length) {
+      return {
+        success: false,
+        message: `The coupon or promotional code you entered is either invalid or has expired.`,
+      };
+    }
+
+    const findCoupon = coupons.data.find((e) => e.name === code);
+
+    if (!findCoupon) {
+      return {
+        success: false,
+        message: `The coupon or promotional code you entered is either invalid or has expired.`,
+      };
+    }
+    if (!findCoupon.valid) {
+      return {
+        success: false,
+        message: `The coupon or promotional code you entered is either invalid or has expired.`,
+      };
+    }
+
+    return {
+      success: true,
+      message: `The coupon has been successfully applied to your plan`,
+      coupon: findCoupon,
+    };
+  } catch (error: any) {
+    console.log(error);
+    throw new GraphQLError('Unable to delete coupon, ' + error.message);
+  }
+};
 
 const resolver = {
   Query: {
     createSession: createSessionForSubscription,
     verifyPayment: verifyPaymentBySession,
     checkUserPurchase,
+  },
+  Mutation: {
+    applyCoupon: applyCouponCode,
   },
 };
 

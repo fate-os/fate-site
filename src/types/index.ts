@@ -66,13 +66,6 @@ export interface SubscriptionHistory {
   created_at?: Date;
 }
 
-export enum SubscriptionPlan {
-  FREE = 'FREE',
-  BASIC = 'BASIC',
-  PREMIUM = 'PREMIUM',
-  LIFE_TIME = 'LIFE_TIME',
-}
-
 export type PriceMode = 'gbp' | 'usd';
 
 export type UserListResponseType = {
@@ -148,3 +141,31 @@ export interface QuoteParameter {
   created_at?: string;
   updated_at?: string;
 }
+
+export type CouponListType = {
+  message?: string;
+  success: boolean;
+  result?: CouponObject[];
+};
+
+export interface CouponObject {
+  id: string;
+  object: string;
+  amount_off: null | number;
+  created: number;
+  currency: null | string;
+  duration: string;
+  duration_in_months: number;
+  livemode: boolean;
+  max_redemptions: any;
+  metadata: any;
+  name: null | string;
+  percent_off: number;
+  redeem_by: null | string;
+  times_redeemed: number;
+  valid: boolean;
+}
+
+export type AdminListResponseType = {
+  adminCouponList: CouponListType;
+};

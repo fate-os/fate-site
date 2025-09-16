@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import { useTranslate } from '@/locales';
 
 import { PaymentSummary } from '../payment-summary';
-import { PaymentMethods } from '../payment-methods';
 
 // ----------------------------------------------------------------------
 
@@ -23,22 +22,8 @@ export function PaymentView({ years, isShine }) {
         {t('payment.subTitle')}
       </Typography>
 
-      <Grid container rowSpacing={{ xs: 5, md: 0 }} columnSpacing={{ xs: 0, md: 5 }} spacing={10}>
-        <Grid item xs={12} md={6}>
-          <Box
-            gap={5}
-            display="grid"
-            sx={{
-              p: { md: 5 },
-              borderRadius: 2,
-              border: (theme) => ({ md: `dashed 1px ${theme.vars.palette.divider}` }),
-            }}
-          >
-            <PaymentMethods />
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
+      <Grid container justifyContent="center">
+        <Grid item xs={12} md={8} lg={6}>
           <PaymentSummary years={years} isShine={isShine} />
         </Grid>
       </Grid>

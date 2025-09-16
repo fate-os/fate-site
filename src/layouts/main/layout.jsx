@@ -14,6 +14,9 @@ import { HeaderBase } from '../core/header-base';
 import { LayoutSection } from '../core/layout-section';
 import { navData as mainNavData } from '../config-nav-main';
 import { useAppSelector } from '@/store/hooks';
+import { Box, Button } from '@mui/material';
+import { paths } from '@/routes/paths';
+import Link from 'next/link';
 
 // ----------------------------------------------------------------------
 
@@ -62,16 +65,32 @@ export function MainLayout({ sx, data, children }) {
             }}
             slots={{
               rightAreaStart: (
-                <NavDesktop
-                  data={navData}
-                  sx={{
-                    display: 'none',
-                    [theme.breakpoints.up(layoutQuery)]: {
-                      mr: 2.5,
-                      display: 'flex',
-                    },
-                  }}
-                />
+                <>
+                  <NavDesktop
+                    data={navData}
+                    sx={{
+                      display: 'none',
+                      [theme.breakpoints.up(layoutQuery)]: {
+                        mr: 2.5,
+                        display: 'flex',
+                      },
+                    }}
+                  />
+                  <Box>
+                    {account?.super_admin && (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color="warning"
+                        LinkComponent={Link}
+                        href={paths.dashboard.coupon.root}
+                        sx={{ marginRight: 2 }}
+                      >
+                        Admin
+                      </Button>
+                    )}
+                  </Box>
+                </>
               ),
             }}
           />

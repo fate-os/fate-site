@@ -25,6 +25,9 @@ import { _workspaces } from '../config-nav-workspace';
 import { LayoutSection } from '../core/layout-section';
 import { navData as dashboardNavData, adminNavData } from '../config-nav-dashboard';
 import { useAppSelector } from '@/store/hooks';
+import { paths } from '@/routes/paths';
+import { Box, Button } from '@mui/material';
+import Link from 'next/link';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +44,7 @@ export function DashboardLayout({ sx, children, data }) {
   const layoutQuery = 'lg';
 
   const navData = data?.nav ?? dashboardNavData;
+  const adminData = account?.super_admin ? adminNavData : [];
 
   const isNavMini = settings.navLayout === 'mini';
 
@@ -86,6 +90,22 @@ export function DashboardLayout({ sx, children, data }) {
                   layoutQuery={layoutQuery}
                   cssVars={navColorVars.section}
                 />
+              ) : null,
+              rightAreaStart: account ? (
+                <Box>
+                  {account?.super_admin && (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="warning"
+                      LinkComponent={Link}
+                      href={paths.app}
+                      sx={{ marginRight: 2 }}
+                    >
+                      Portal
+                    </Button>
+                  )}
+                </Box>
               ) : null,
             }}
             slotProps={{

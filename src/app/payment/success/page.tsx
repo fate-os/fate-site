@@ -12,6 +12,8 @@ const page = async ({ searchParams }: { searchParams: Promise<{ session_id: stri
     return notFound();
   }
   try {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
     const client = await getClient();
     const { data } = await client.query<VerifyPaymentResponse>({
       query: VERIFY_PAYMENT,

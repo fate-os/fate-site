@@ -29,4 +29,12 @@ export const paths = {
     profile: `${ROOTS.APP}/account/profile`,
     passwordAndSecurity: `${ROOTS.APP}/account/password-and-security`,
   },
+  dashboard: {
+    coupon: {
+      root: `${ROOTS.APP}/admin/coupon`,
+      new: `${ROOTS.APP}/admin/coupon/new`,
+    },
+  },
 };
+
+export const ADMIN_ONLY_PATHS = [paths.dashboard.coupon.root];

@@ -12,7 +12,7 @@ import { CONFIG } from 'src/config-global';
 import { varAlpha, bgGradient } from 'src/theme/styles';
 import { Label } from 'src/components/label';
 import { useAppSelector } from '@/store/hooks';
-import { SubscriptionPlan } from '@/types';
+
 import Link from 'next/link';
 
 // ----------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-import { paths } from 'src/routes/paths';
+import { ADMIN_ONLY_PATHS, paths } from 'src/routes/paths';
 import { useRouter, usePathname, useSearchParams } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/config-global';
@@ -36,10 +36,10 @@ export function AuthGuard({ children }: Props) {
     [searchParams]
   );
 
-  // // Check if current path requires admin privileges
-  // const isAdminProtectedPath = useCallback((currentPath: string) => {
-  //   return ADMIN_ONLY_PATHS.some((protectedPath) => currentPath.startsWith(protectedPath));
-  // }, []);
+  // Check if current path requires admin privileges
+  const isAdminProtectedPath = useCallback((currentPath: string) => {
+    return ADMIN_ONLY_PATHS.some((protectedPath) => currentPath.startsWith(protectedPath));
+  }, []);
 
   const checkPermissions = async () => {
     if (loadingAccount) {
@@ -53,22 +53,22 @@ export function AuthGuard({ children }: Props) {
         account: paths.auth.account.signIn,
       }[method];
 
-      const href = `${'/'}?${createQueryString('returnTo', pathname)}`;
+      const href = `${signInPath}?${createQueryString('returnTo', pathname)}`;
 
       router.replace(href);
       return;
     }
 
     // Check if path requires admin privileges
-    // if (isAdminProtectedPath(pathname)) {
-    //   const isAdmin = account?.super_admin === true;
+    if (isAdminProtectedPath(pathname)) {
+      const isAdmin = account?.super_admin === true;
 
-    //   if (!isAdmin) {
-    //     // Redirect to 403 page if trying to access protected path without admin rights
-    //     router.replace(paths.page403);
-    //     return;
-    //   }
-    // }
+      if (!isAdmin) {
+        // Redirect to 403 page if trying to access protected path without admin rights
+        router.replace(paths.page403);
+        return;
+      }
+    }
 
     setIsChecking(false);
   };
