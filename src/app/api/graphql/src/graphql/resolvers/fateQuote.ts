@@ -14,6 +14,13 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
   try {
     const { date, gender, shine } = args;
 
+    if (!context.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, please log in and try again',
+      };
+    }
+
     if (!date) {
       return {
         success: false,
@@ -38,7 +45,7 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
 
     // Find fate quote with related quote parameters
     // Search for exact time match in UTC
-    const fateQuote = await FateOsClient.fate_quote.findFirst({
+    const [fateQuote] = await FateOsClient.fate_quote.findMany({
       where: {
         date: exactDateUTC,
         ...(gender && { gender }),
@@ -51,6 +58,7 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       include: {
         quote_parameter: true,
       },
+      take: 1,
     });
 
     if (!fateQuote) {
