@@ -1,7 +1,6 @@
 const isStaticExport = 'false';
 
 const nextConfig = {
-  trailingSlash: true,
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
   env: {
     BUILD_STATIC_EXPORT: isStaticExport,
@@ -28,21 +27,7 @@ const nextConfig = {
   ...(isStaticExport === 'true' && {
     output: 'export',
   }),
-  async headers() {
-    return [
-      {
-        source: '/checkout',
-        headers: [
-          { key: 'X-Frame-Options', value: 'SAMEORIGIN' }, // optional; CSP is preferred
-          {
-            key: 'Content-Security-Policy',
-            value:
-              "frame-ancestors 'self' https://secureacceptance.cybersource.com https://testsecureacceptance.cybersource.com https://secureacceptance.merchant-services.bankofamerica.com https://testsecureacceptance.merchant-services.bankofamerica.com",
-          },
-        ],
-      },
-    ];
-  },
+  trailingSlash: true,
 };
 
 export default nextConfig;
