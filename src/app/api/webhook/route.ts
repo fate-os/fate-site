@@ -28,7 +28,7 @@ const registerHook = async () => {
       event_payload: 'snapshot',
       enabled_events: ['checkout.session.completed'],
       webhook_endpoint: {
-        url: `${process.env.SERVER_URL}/api/webhook`,
+        url: `${process.env.SERVER_URL}/api/webhook/`,
       },
     });
   } catch (error: any) {
