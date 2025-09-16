@@ -91,7 +91,7 @@ export function generateOTPEmail(params: OTPEmailParams): string {
   const {
     otp,
     recipientName,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',
@@ -140,7 +140,7 @@ export function generateWelcomeEmail(params: WelcomeEmailParams): string {
     recipientName,
     recipientEmail,
     quickStartLink,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',
@@ -187,7 +187,7 @@ export function generateResetPinEmail(params: ResetPinEmailParams): string {
   const {
     recipientName,
     otp,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',
@@ -222,8 +222,8 @@ export function generateResetPinEmail(params: ResetPinEmailParams): string {
   `;
 }
 
-interface SubscriptionEmailParams {
-  subscription_plan: string;
+interface PaymentConfirmationEmailParams {
+  payment_plan: string;
   hosted_invoice_url?: string;
   invoice_pdf?: string;
   recipientName: string;
@@ -231,18 +231,22 @@ interface SubscriptionEmailParams {
   companyName?: string;
   brandColor?: string;
   textColor?: string;
+  paymentAmount?: string;
+  paymentDate?: string;
 }
 
-export function generateSubscriptionEmail(params: SubscriptionEmailParams): string {
+export function generatePaymentConfirmationEmail(params: PaymentConfirmationEmailParams): string {
   const {
-    subscription_plan,
+    payment_plan,
     hosted_invoice_url,
     invoice_pdf,
     recipientName,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',
+    paymentAmount,
+    paymentDate = new Date().toLocaleDateString(),
   } = params;
 
   return `
@@ -251,110 +255,23 @@ export function generateSubscriptionEmail(params: SubscriptionEmailParams): stri
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Confirmation - ${companyName}</title>
+    <title>Payment Confirmation - ${companyName}</title>
     <style>${BASE_STYLE}</style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h2 class="accent">Subscription Confirmed</h2>
+            <h2 class="accent">Payment Confirmed</h2>
         </div>
         <p>Hi ${recipientName},</p>
-        <p>Thank you for subscribing to the <b>${subscription_plan}</b> plan!</p>
-        <p style="font-size:14px;color:#888;">Confirmation Date: ${new Date().toLocaleDateString()}</p>
+        <p>Thank you for your purchase! Your payment for <b>${payment_plan}</b> has been successfully processed.</p>
+        ${paymentAmount ? `<p style="font-size:18px;color:${brandColor};font-weight:bold;">Amount: ${paymentAmount}</p>` : ''}
+        <p style="font-size:14px;color:#888;">Payment Date: ${paymentDate}</p>
         <div style="margin:20px 0;">
-          ${hosted_invoice_url ? `<a href="${hosted_invoice_url}" class="button">View Invoice</a>` : ''}
+          ${hosted_invoice_url ? `<a href="${hosted_invoice_url}" class="button">View Receipt</a>` : ''}
           ${invoice_pdf ? `<a href="${invoice_pdf}" class="button">Download PDF</a>` : ''}
         </div>
-        <div class="footer">
-            Need help? Email <a href="mailto:${supportEmail}" style="color:${brandColor};">${supportEmail}</a>.<br>
-            &copy; ${new Date().getFullYear()} ${companyName}
-        </div>
-    </div>
-</body>
-</html>
-  `;
-}
-
-interface SubscriptionDispatchEmailParams {
-  recipientName: string;
-  subscription_plan: string;
-  supportEmail?: string;
-  companyName?: string;
-  brandColor?: string;
-  textColor?: string;
-  update_payment_link?: string;
-  resubscribe_link?: string;
-}
-
-// 2. Past Due Subscription Template
-export function generatePastDueSubscriptionEmail(params: SubscriptionDispatchEmailParams): string {
-  const {
-    recipientName,
-    subscription_plan,
-    supportEmail = 'founder@fate-os.com',
-    companyName = 'Fate Os',
-    brandColor = '#00A76F',
-    textColor = '#333333',
-    update_payment_link = '#',
-  } = params;
-
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Past Due - ${companyName}</title>
-    <style>${BASE_STYLE}</style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2 class="accent">Payment Past Due</h2>
-        </div>
-        <p>Hi ${recipientName},</p>
-        <p>Your <b>${subscription_plan}</b> subscription payment is overdue. Please update your payment method to maintain access.</p>
-        <a href="${update_payment_link}" class="button">Update Payment</a>
-        <div class="footer">
-            Need help? Email <a href="mailto:${supportEmail}" style="color:${brandColor};">${supportEmail}</a>.<br>
-            &copy; ${new Date().getFullYear()} ${companyName}
-        </div>
-    </div>
-</body>
-</html>
-  `;
-}
-
-// 3. Canceled Subscription Template
-export function generateCanceledSubscriptionEmail(params: SubscriptionDispatchEmailParams): string {
-  const {
-    recipientName,
-    subscription_plan,
-    supportEmail = 'founder@fate-os.com',
-    companyName = 'Fate Os',
-    brandColor = '#00A76F',
-    textColor = '#333333',
-    resubscribe_link,
-  } = params;
-
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Canceled - ${companyName}</title>
-    <style>${BASE_STYLE}</style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2 class="accent">Subscription Canceled</h2>
-        </div>
-        <p>Hi ${recipientName},</p>
-        <p>Your <b>${subscription_plan}</b> subscription has been canceled. Your account will be downgraded to the Free Plan.</p>
-        ${resubscribe_link ? `<a href="${resubscribe_link}" class="button">Resubscribe</a>` : ''}
+        <p style="font-size:14px;color:#888;">Your fate reading is now ready. You can access your personalized insights anytime.</p>
         <div class="footer">
             Need help? Email <a href="mailto:${supportEmail}" style="color:${brandColor};">${supportEmail}</a>.<br>
             &copy; ${new Date().getFullYear()} ${companyName}
@@ -382,7 +299,7 @@ export function generateRefundInitiatedEmail(params: RefundEmailParams): string 
     refundAmount,
     refundDate,
     currency,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',
@@ -429,7 +346,7 @@ export function generateFailedSubscriptionEmail(params: SubscriptionFailEmailPar
   const {
     recipientName,
     subscription_plan,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',
@@ -475,7 +392,7 @@ export function generatePastDueCancellationEmail(params: CancellationEmailParams
   const {
     recipientName,
     subscription_plan,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     paymentUpdateLink = '#',
@@ -522,7 +439,7 @@ export function generateFreeTrialStartedEmail(params: FreeTrialEmailParams): str
   const {
     recipientName,
     trialEndDate,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     dashboardLink = '#',
@@ -569,7 +486,7 @@ interface DeletedUserEmailParams {
 export function generateDeletedUserEmail(params: DeletedUserEmailParams): string {
   const {
     recipientName,
-    supportEmail = 'founder@fate-os.com',
+    supportEmail = 'contactus@fate-os.com',
     companyName = 'Fate Os',
     brandColor = '#00A76F',
     textColor = '#333333',

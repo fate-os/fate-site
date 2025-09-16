@@ -4,9 +4,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { useLazyQuery } from '@apollo/client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubscriptionSessionResponse } from '@/types';
 import { toast } from 'src/components/snackbar';
 import { useMediaQuery } from '@mui/material';
@@ -14,6 +16,7 @@ import { ProgressLoader } from '@/components/loading-screen/loaders';
 import { GET_STRIPE_SESSION } from '@/graphql/query/Payment';
 
 // ----------------------------------------------------------------------
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 // ----------------------------------------------------------------------
 
@@ -25,15 +28,33 @@ type PaymentDialogProps = {
 };
 
 export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogProps) {
-  // const [getSession, { loading }] = useLazyQuery<SubscriptionSessionResponse>(GET_STRIPE_SESSION, {
-  //   variables: {
-  //     years: Number(years),
-  //     shine: isShine,
-  //   },
-  // });
-  const loading = false;
+  const [getSession, { loading }] = useLazyQuery<SubscriptionSessionResponse>(GET_STRIPE_SESSION, {
+    variables: {
+      years: Number(years),
+      shine: isShine,
+    },
+  });
 
   const matchDownMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
+
+  const [clientSecret, setClientSecret] = useState('');
+
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await getSession();
+
+      if (data?.createSession?.success) {
+        setClientSecret(data.createSession.result);
+      }
+
+      if (!data?.createSession?.success) {
+        toast.error('Payment could not be completed. Please try again later.', {
+          description: data?.createSession?.message,
+        });
+      }
+    };
+    getData();
+  }, []);
 
   return (
     <Dialog
@@ -47,7 +68,20 @@ export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogPr
       <DialogTitle>Complete Your Purchase </DialogTitle>
 
       <DialogContent sx={{ width: '100%' }}>
-        {loading ? <ProgressLoader></ProgressLoader> : <CheckoutPage />}
+        {loading ? (
+          <ProgressLoader></ProgressLoader>
+        ) : (
+          <>
+            {clientSecret && (
+              <EmbeddedCheckoutProvider
+                stripe={stripePromise}
+                options={{ clientSecret: clientSecret }}
+              >
+                <EmbeddedCheckout />
+              </EmbeddedCheckoutProvider>
+            )}
+          </>
+        )}
       </DialogContent>
 
       <DialogActions
@@ -64,58 +98,5 @@ export function PaymentDialog({ onClose, open, years, isShine }: PaymentDialogPr
         </Button>
       </DialogActions>
     </Dialog>
-  );
-}
-
-export default function CheckoutPage() {
-  const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    const buildForm = async () => {
-      const res = await fetch('/api/sa/build', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: '49.99',
-          currency: 'USD',
-          reference: 'ORDER-' + Date.now(),
-        }),
-      });
-
-      const { fields } = await res.json();
-      const form = formRef.current!;
-      form.innerHTML = ''; // clear previous
-
-      Object.entries(fields).forEach(([name, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = name;
-        input.value = String(value);
-        form.appendChild(input);
-      });
-
-      form.submit();
-    };
-
-    buildForm();
-  }, []);
-
-  const env = process.env.NEXT_PUBLIC_SA_ENV || 'test';
-  const endpoint =
-    env === 'prod'
-      ? 'https://secureacceptance.merchant-services.bankofamerica.com/silent/embedded/token/create'
-      : 'https://testsecureacceptance.merchant-services.bankofamerica.com/silent/embedded/token/create';
-
-  return (
-    <div>
-      <h1>Checkout</h1>
-      <iframe
-        name="sa_iframe"
-        id="sa_iframe"
-        title="Secure Acceptance"
-        style={{ width: '100%', minHeight: 500, border: '0' }}
-      />
-      <form ref={formRef} method="post" target="sa_iframe" action={endpoint}></form>
-    </div>
   );
 }

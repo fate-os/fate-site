@@ -2,9 +2,8 @@ import { AppContext } from '../../types';
 import { GraphQLError } from 'graphql';
 import { SessionArg, VerifyPaymentArg } from '../../types/req';
 import { FateOsClient } from '@/db/prisma';
-// import { stripe } from '@/db/stripe';
+import { stripe } from '@/db/stripe';
 import { CONFIG } from '@/config-global';
-// import Stripe from 'stripe';
 
 const YOUR_DOMAIN = CONFIG.site.assetURL;
 
@@ -40,37 +39,42 @@ const createSessionForSubscription = async (_: any, arg: SessionArg, cont: AppCo
     //   },
     //   where: { shine: shine ? 'up' : undefined },
     // });
+    const create_coupon = await stripe.coupons.create({
+      percent_off: 100,
+      duration: 'once', // Applies only to first invoice
+      max_redemptions: 2,
+    });
+    const priceId = await stripe.prices.create({
+      currency: 'usd',
+      unit_amount: years * 100 * 100,
+      product_data: { name: shine ? 'Change fate' : `${years} years` },
+    });
 
-    // const priceId = await stripe.prices.create({
-    //   currency: 'usd',
-    //   unit_amount: years * 100 * 100,
-    //   product_data: { name: shine ? 'Change fate' : `${years} years` },
-    // });
+    const session = await stripe.checkout.sessions.create({
+      ui_mode: 'embedded',
+      line_items: [
+        {
+          price: priceId.id,
+          quantity: 1,
+        },
+      ],
+      discounts: [{ coupon: create_coupon.id }],
 
-    // const session = await stripe.checkout.sessions.create({
-    //   ui_mode: 'embedded',
-    //   line_items: [
-    //     {
-    //       price: priceId.id,
-    //       quantity: 1,
-    //     },
-    //   ],
-
-    //   mode: 'payment',
-    //   return_url: `${YOUR_DOMAIN}/payment/success/?session_id={CHECKOUT_SESSION_ID}`,
-    //   customer_email: cont.account?.account.email,
-    //   metadata: {
-    //     user_id: cont?.account?.account.id,
-    //     session_id: '{CHECKOUT_SESSION_ID}',
-    //     years: shine ? 60 : years,
-    //     shine: shine ? 'shine' : '',
-    //   },
-    // });
-    // return {
-    //   success: true,
-    //   message: 'Getting lifetime subscription successfully',
-    //   result: session.client_secret,
-    // };
+      mode: 'payment',
+      return_url: `${YOUR_DOMAIN}/payment/success/?session_id={CHECKOUT_SESSION_ID}`,
+      customer_email: cont.account?.account.email,
+      metadata: {
+        user_id: cont?.account?.account.id,
+        session_id: '{CHECKOUT_SESSION_ID}',
+        years: shine ? 60 : years,
+        shine: shine ? 'shine' : '',
+      },
+    });
+    return {
+      success: true,
+      message: 'Getting lifetime subscription successfully',
+      result: session.client_secret,
+    };
 
     // // Update with Stripe session and subscription IDs
     // await FateOsClient.purchased_subscription.update({
@@ -102,65 +106,50 @@ const verifyPaymentBySession = async (_: any, arg: VerifyPaymentArg, cont: AppCo
       };
     }
 
-    // const session = await stripe.checkout.sessions.retrieve(sessionId, {
-    //   expand: ['payment_intent'],
-    // });
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['payment_intent'],
+    });
 
-    // if (!session) {
-    //   return {
-    //     success: false,
-    //     message: 'False',
-    //     result: {
-    //       status: 'fail',
-    //     },
-    //   };
-    // }
+    if (!session) {
+      return {
+        success: false,
+        message: 'False',
+        result: {
+          status: 'fail',
+        },
+      };
+    }
 
-    // const metadata = session.metadata;
+    const metadata = session.metadata;
 
-    // // Check if payment history already exists for this session
-    // const existingHistory = await FateOsClient.payment_history.findFirst({
-    //   where: {
-    //     stripe_session_id: session.id,
-    //   },
-    // });
+    // Check if payment history already exists for this session
+    const existingHistory = await FateOsClient.payment_history.findFirst({
+      where: {
+        stripe_session_id: session.id,
+      },
+    });
 
-    // let createHistory;
+    console.log(existingHistory, 'existingHistory');
 
-    // if (!existingHistory) {
-    //   // Create payment history only if it doesn't exist
-    //   createHistory = await FateOsClient.payment_history.create({
-    //     data: {
-    //       user_id: metadata?.user_id as string,
-    //       paid_amount: (session.payment_intent as Stripe.PaymentIntent).amount_received / 100,
-    //       year_count: Number(metadata?.years),
-    //       stripe_session_id: session.id,
-    //     },
-    //   });
-    // } else {
-    //   // Use existing history if found
-    //   createHistory = existingHistory;
-    // }
+    if (!existingHistory) {
+      return {
+        success: false,
+        message: 'False',
+        result: {
+          status: 'error',
+        },
+      };
+    }
 
-    // if (!createHistory) {
-    //   return {
-    //     success: false,
-    //     message: 'False',
-    //     result: {
-    //       status: 'error',
-    //     },
-    //   };
-    // }
-
-    // return {
-    //   success: true,
-    //   message: 'Getting payment status',
-    //   result: {
-    //     status: session.payment_status,
-    //     amount: session?.amount_total ? session?.amount_total / 100 : 0,
-    //     history_id: createHistory.id,
-    //   },
-    // };
+    return {
+      success: true,
+      message: 'Getting payment status',
+      result: {
+        status: session.payment_status,
+        amount: session?.amount_total ? session?.amount_total / 100 : 0,
+        history_id: existingHistory.id,
+      },
+    };
   } catch (error: any) {
     console.log(error);
     throw new GraphQLError(error.message);
