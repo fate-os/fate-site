@@ -53,6 +53,8 @@ model payment_history {
   metadata          String?
   paid_amount       Float
   year_count        Int
+  is_credit_used    Boolean?    @default(false)
+  used_date         DateTime?
   user              user        @relation(fields: [user_id], references: [id])
   user_id           String
   created_at        DateTime?   @default(now())

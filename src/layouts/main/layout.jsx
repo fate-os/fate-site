@@ -17,6 +17,7 @@ import { useAppSelector } from '@/store/hooks';
 import { Box, Button } from '@mui/material';
 import { paths } from '@/routes/paths';
 import Link from 'next/link';
+import { _account } from '../config-nav-account';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ export function MainLayout({ sx, data, children }) {
             layoutQuery={layoutQuery}
             onOpenNav={mobileNavOpen.onTrue}
             data={{
-              // nav: navData,
+              account: account ? _account : [],
               langs: allLangs,
             }}
             slotsDisplay={{

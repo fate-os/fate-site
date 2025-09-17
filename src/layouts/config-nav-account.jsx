@@ -20,9 +20,9 @@ export const _account = [
   //     </SvgIcon>
   //   ),
   // },
-  // {
-  //   label: 'Password & security',
-  //   href: paths.account.passwordAndSecurity,
-  //   icon: <Iconify icon="hugeicons:lock-key" />,
-  // },
+  {
+    label: 'Manage Purchase',
+    href: paths.account.managePurchase,
+    icon: <Iconify icon="solar:money-bag-line-duotone" />,
+  },
 ];

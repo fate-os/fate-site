@@ -4,6 +4,7 @@ import { CouponApplyArg, SessionArg, VerifyPaymentArg } from '../../types/req';
 import { FateOsClient } from '@/db/prisma';
 import { stripe } from '@/db/stripe';
 import { CONFIG } from '@/config-global';
+import moment from 'moment';
 
 const YOUR_DOMAIN = CONFIG.site.assetURL;
 
@@ -230,6 +231,8 @@ const checkUserPurchase = async (
           history_id: 'admin-bypass',
           paid_amount: 0,
           year_count: shine ? 60 : years,
+          is_credit_used: false,
+          used_date: null,
         },
       };
     }
@@ -243,6 +246,13 @@ const checkUserPurchase = async (
       },
       orderBy: {
         created_at: 'desc',
+      },
+      select: {
+        id: true,
+        paid_amount: true,
+        year_count: true,
+        is_credit_used: true,
+        used_date: true,
       },
     });
 
@@ -266,6 +276,8 @@ const checkUserPurchase = async (
           history_id: paymentHistory.id,
           paid_amount: paymentHistory.paid_amount,
           year_count: paymentHistory.year_count,
+          is_credit_used: paymentHistory.is_credit_used,
+          used_date: paymentHistory.used_date?.toISOString(),
         },
       };
     }
@@ -278,6 +290,8 @@ const checkUserPurchase = async (
         history_id: null,
         paid_amount: 0,
         year_count: 0,
+        is_credit_used: false,
+        used_date: null,
       },
     };
   } catch (error: any) {
@@ -432,6 +446,91 @@ const checkHasPurchaseHistory = async (_: any, __: any, cont: AppContext) => {
   }
 };
 
+const markCreditUsed = async (
+  _: any,
+  args: { history_id: string; used_date: string },
+  context: AppContext
+) => {
+  try {
+    const { history_id, used_date } = args;
+
+    if (!context.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, please log in and try again',
+      };
+    }
+
+    if (!history_id) {
+      return {
+        success: false,
+        message: 'History ID is required',
+      };
+    }
+
+    if (!used_date) {
+      return {
+        success: false,
+        message: 'Used date is required',
+      };
+    }
+
+    // Verify that the payment history belongs to the current user
+    const paymentHistory = await FateOsClient.payment_history.findFirst({
+      where: {
+        id: history_id,
+        user_id: context.account.account.id,
+      },
+    });
+
+    if (!paymentHistory) {
+      return {
+        success: false,
+        message: 'Payment history not found or does not belong to current user',
+      };
+    }
+
+    // Update the payment history to mark credit as used
+    // Only update if not already used or if it's the same date
+    const currentUsedDate = paymentHistory.used_date;
+    const newUsedDate = new Date(used_date);
+
+    // If already used and it's the same date, don't update
+    if (
+      paymentHistory.is_credit_used &&
+      currentUsedDate &&
+      moment(currentUsedDate).isSame(moment(newUsedDate), 'second')
+    ) {
+      // Already used for this exact time, no need to update
+      return {
+        success: true,
+        message: 'Credit already marked as used for this time',
+      };
+    }
+
+    await FateOsClient.payment_history.update({
+      where: {
+        id: history_id,
+      },
+      data: {
+        is_credit_used: true,
+        used_date: newUsedDate,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Credit marked as used successfully',
+    };
+  } catch (error: any) {
+    console.error('Error in markCreditUsed:', error);
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+    };
+  }
+};
+
 const resolver = {
   Query: {
     createSession: createSessionForSubscription,
@@ -442,6 +541,7 @@ const resolver = {
   },
   Mutation: {
     applyCoupon: applyCouponCode,
+    markCreditUsed,
   },
 };
 

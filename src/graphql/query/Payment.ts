@@ -33,6 +33,8 @@ export const CHECK_USER_PURCHASE = gql`
         history_id
         paid_amount
         year_count
+        is_credit_used
+        used_date
       }
     }
   }

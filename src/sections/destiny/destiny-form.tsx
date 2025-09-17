@@ -13,9 +13,14 @@ import { Box, Button, MenuItem, Stack, Typography, Alert } from '@mui/material';
 import dayjs from 'dayjs';
 import { DestinyFormValues } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { destinyFormInit, setFateQuoteResult } from '@/store/features/app.reducer';
-import { useLazyQuery } from '@apollo/client';
+import {
+  destinyFormInit,
+  setFateQuoteResult,
+  setFateQuoteError,
+} from '@/store/features/app.reducer';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_FATE_QUOTE } from '@/graphql/query/FateQuote';
+import { MARK_CREDIT_USED } from '@/graphql/mutation/payment';
 import { FateQuoteResponse } from '@/types';
 import moment from 'moment';
 
@@ -50,6 +55,10 @@ const DestinyForm = (props: Props) => {
       fetchPolicy: 'no-cache',
       errorPolicy: 'all',
     });
+
+  const [markCreditUsed, { loading: markCreditLoading }] = useMutation(MARK_CREDIT_USED, {
+    errorPolicy: 'all',
+  });
 
   const methods = useForm<DestinyFormValues>({
     mode: 'all',
@@ -135,9 +144,10 @@ const DestinyForm = (props: Props) => {
 
       const formattedDate = combinedDate.toISOString();
 
-      // Get shine parameter from URL
+      // Get shine and history parameters from URL
       const urlParams = new URLSearchParams(window.location.search);
       const shine = urlParams.get('shine') === 'true';
+      const history_id = urlParams.get('history');
 
       // Call the GraphQL query
       const { data: queryData } = await getFateQuote({
@@ -145,15 +155,38 @@ const DestinyForm = (props: Props) => {
           date: formattedDate,
           gender: data.gender,
           shine: shine,
+          history_id: history_id,
         },
       });
 
+      // Dispatch the form data first
+      dispatch(destinyFormInit(data));
+
       // If successful, dispatch the result
-      if (queryData?.getFateQuote.success && queryData.getFateQuote.result) {
-        // Dispatch the form data
-        dispatch(destinyFormInit(data));
+      if (queryData?.getFateQuote?.success && queryData.getFateQuote?.result) {
         dispatch(setFateQuoteResult(queryData.getFateQuote.result));
-        console.log(queryData.getFateQuote.result);
+        dispatch(setFateQuoteError(null)); // Clear any previous errors
+
+        // Mark credit as used if history_id is provided and user is not super admin
+        if (history_id && history_id !== 'admin-bypass') {
+          try {
+            await markCreditUsed({
+              variables: {
+                history_id: history_id,
+                used_date: moment(combinedDate).toISOString(),
+              },
+            });
+          } catch (markError) {
+            console.error('Error marking credit as used:', markError);
+            // Don't throw error here as the main operation was successful
+          }
+        }
+      } else {
+        // If not successful, dispatch the error message
+        const errorMessage =
+          queryData?.getFateQuote.message || 'Failed to retrieve fate quote. Please try again.';
+        dispatch(setFateQuoteError(errorMessage));
+        dispatch(setFateQuoteResult(null)); // Clear any previous results
       }
     } catch (error) {
       console.error(error);
@@ -167,6 +200,7 @@ const DestinyForm = (props: Props) => {
     // Clear the Redux state
     dispatch(destinyFormInit(null));
     dispatch(setFateQuoteResult(null));
+    dispatch(setFateQuoteError(null));
   };
 
   return (
@@ -235,7 +269,7 @@ const DestinyForm = (props: Props) => {
               type="submit"
               size="large"
               variant="contained"
-              loading={isSubmitting || queryLoading}
+              loading={isSubmitting || queryLoading || markCreditLoading}
             >
               Confirm
             </Button>

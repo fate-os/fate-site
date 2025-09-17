@@ -4,7 +4,7 @@ import { useAppSelector } from '@/store/hooks';
 import { TriangleDiagram } from './triangle-diagram';
 
 function DestinyResult() {
-  const { destinyForm, fateQuoteResult } = useAppSelector((e) => e.app);
+  const { destinyForm, fateQuoteResult, fateQuoteError } = useAppSelector((e) => e.app);
 
   if (!destinyForm) {
     return (
@@ -12,6 +12,15 @@ function DestinyResult() {
         {/* <Typography variant="h6" color="text.secondary" textAlign="center">
           Please fill out the form to see your destiny result
         </Typography> */}
+      </Box>
+    );
+  }
+
+  // Show error message if there's an error
+  if (fateQuoteError) {
+    return (
+      <Box>
+        <Alert severity="error">{fateQuoteError}</Alert>
       </Box>
     );
   }

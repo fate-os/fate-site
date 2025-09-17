@@ -15,7 +15,7 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  searchParams: Promise<{ shine?: string }>;
+  searchParams: Promise<{ shine?: string; confirm_another_purchase?: string }>;
   params: Promise<{ amount: string }>;
 }) {
   // Safely parse search params and route params
@@ -23,6 +23,7 @@ export default async function Page({
   const paramsData = await params;
 
   const isShine = searchParamsData?.shine;
+  const confirmAnotherPurchase = searchParamsData?.confirm_another_purchase;
   const { amount } = paramsData;
 
   // Validate amount parameter
@@ -76,11 +77,22 @@ export default async function Page({
 
   // If user has purchased, redirect to destiny with history ID
   // This must be outside of any try-catch block
-  if (data.checkUserPurchase.result?.has_purchased && data.checkUserPurchase.result?.history_id) {
+  // Skip redirect if user confirmed they want to make another purchase
+  if (
+    data.checkUserPurchase.result?.has_purchased &&
+    data.checkUserPurchase.result?.history_id &&
+    confirmAnotherPurchase !== 'true'
+  ) {
     const destinyUrl = `${paths.destiny}?history=${data.checkUserPurchase.result.history_id}${isShine === 'true' ? '&shine=true' : ''}`;
     redirect(destinyUrl);
   }
 
   // If user hasn't purchased, show payment view
-  return <PaymentView years={amount} isShine={isShine === 'true'} />;
+  return (
+    <PaymentView
+      years={amount}
+      isShine={isShine === 'true'}
+      confirmAnotherPurchase={confirmAnotherPurchase === 'true'}
+    />
+  );
 }

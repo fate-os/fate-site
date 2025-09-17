@@ -8,11 +8,12 @@ type GetFateQuoteArgs = {
   date: string;
   gender?: string;
   shine?: boolean;
+  history_id?: string;
 };
 
 const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext) => {
   try {
-    const { date, gender, shine } = args;
+    const { date, gender, shine, history_id } = args;
 
     if (!context.account?.account) {
       return {
@@ -43,17 +44,73 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
     // Convert to UTC date for exact time matching (to match database format)
     const exactDateUTC = parsedDate.utc().toDate();
 
+    // Check if user is super admin - if so, skip purchase requirement
+    const isSuperAdmin = context.account.account.super_admin === true;
+
+    // If not super admin and history_id is provided, check the payment history count
+    let shouldFilterQuoteParameters = false;
+    if (!isSuperAdmin && history_id) {
+      const paymentHistory = await FateOsClient.payment_history.findUnique({
+        where: {
+          id: history_id,
+        },
+        select: {
+          year_count: true,
+          is_credit_used: true,
+          used_date: true,
+        },
+      });
+
+      // Check if credit is already used for a different time
+      if (paymentHistory?.is_credit_used && paymentHistory.used_date) {
+        const usedDateTime = moment(paymentHistory.used_date);
+        const requestedDateTime = moment(exactDateUTC);
+
+        // Only block if they're trying to view a different time
+        // Allow unlimited views of the same time they already used
+        if (!usedDateTime.isSame(requestedDateTime, 'second')) {
+          return {
+            success: false,
+            message:
+              'Your purchased credit has been used. Please buy more to view additional results',
+            result: null,
+          };
+        }
+      }
+
+      // If payment history exists and year_count is not 60, filter quote parameters
+      if (paymentHistory && paymentHistory.year_count !== 60) {
+        shouldFilterQuoteParameters = true;
+      }
+    }
+
+    // Build the where clause for quote parameters
+    const quoteParameterWhere: any = {};
+
+    // If we need to filter quote parameters, exclude the specified fields
+    if (shouldFilterQuoteParameters) {
+      quoteParameterWhere.AND = [
+        { top_number: null },
+        { right_side_number: null },
+        { bottom_right_number: null },
+        { bottom_left_number: null },
+        { left_side_number: null },
+        { perpendicular: null },
+      ];
+    }
+
+    // Add shine filter if needed
+    if (shine) {
+      quoteParameterWhere.shine = 'up';
+    }
+
     // Find fate quote with related quote parameters
     // Search for exact time match in UTC
     const [fateQuote] = await FateOsClient.fate_quote.findMany({
       where: {
         date: exactDateUTC,
         ...(gender && { gender }),
-        ...(shine && {
-          quote_parameter: {
-            shine: 'up',
-          },
-        }),
+        quote_parameter: quoteParameterWhere,
       },
       include: {
         quote_parameter: true,

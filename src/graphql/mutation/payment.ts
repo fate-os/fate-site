@@ -14,3 +14,12 @@ export const APPLY_COUPON = gql`
     }
   }
 `;
+
+export const MARK_CREDIT_USED = gql`
+  mutation MarkCreditUsed($history_id: String!, $used_date: Date!) {
+    markCreditUsed(history_id: $history_id, used_date: $used_date) {
+      success
+      message
+    }
+  }
+`;

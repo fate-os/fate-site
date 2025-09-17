@@ -10,7 +10,7 @@ import { PaymentSummary } from '../payment-summary';
 
 // ----------------------------------------------------------------------
 
-export function PaymentView({ years, isShine }) {
+export function PaymentView({ years, isShine, confirmAnotherPurchase = false }) {
   const { t } = useTranslate('app');
   return (
     <Container sx={{ pt: 5, pb: 10 }}>
@@ -24,7 +24,11 @@ export function PaymentView({ years, isShine }) {
 
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
-          <PaymentSummary years={years} isShine={isShine} />
+          <PaymentSummary
+            years={years}
+            isShine={isShine}
+            confirmAnotherPurchase={confirmAnotherPurchase}
+          />
         </Grid>
       </Grid>
     </Container>

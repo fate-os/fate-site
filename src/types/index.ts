@@ -44,6 +44,8 @@ export interface CheckUserPurchaseResult {
   history_id: string | null;
   paid_amount: number;
   year_count: number;
+  is_credit_used: boolean | null;
+  used_date: string | null;
 }
 
 export interface CheckUserPurchaseResponse {

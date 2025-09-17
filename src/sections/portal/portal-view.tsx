@@ -1,16 +1,33 @@
 'use client';
 // This file is a part of the React application that displays a circular layout of numbers with labels
-import React from 'react';
-import { Box, Typography, useTheme, useMediaQuery, Paper, Container, Grid2 } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  Paper,
+  Container,
+  Grid2,
+  Button,
+} from '@mui/material';
 
 import { useRouter } from 'next/navigation';
 import { TriangleDiagram } from '../destiny/triangle-diagram';
 import { useTranslate } from '@/locales';
 import { paths } from '@/routes/paths';
 import { useAppSelector } from '@/store/hooks';
+import { useBoolean } from '@/hooks/use-boolean';
+import { ConfirmDialog } from '@/components/custom-dialog';
+import { useQuery } from '@apollo/client';
+import { CHECK_USER_PURCHASE } from '@/graphql/query/Payment';
+import { CheckUserPurchaseResponse } from '@/types';
 
 function App() {
   const { account } = useAppSelector((s) => s.auth);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedParams, setSelectedParams] = useState<string>('');
+  const confirm = useBoolean();
 
   // Generate data for years 1-60 with corresponding dollar amounts
   const data = Array.from({ length: 60 }, (_, i) => ({
@@ -24,14 +41,92 @@ function App() {
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
   const { t } = useTranslate('app');
 
+  // GraphQL query to check user purchase for the selected year
+  const {
+    data: purchaseData,
+    loading: purchaseLoading,
+    refetch: refetchPurchase,
+  } = useQuery<CheckUserPurchaseResponse>(CHECK_USER_PURCHASE, {
+    variables: {
+      years: selectedYear || 1,
+      shine: selectedParams.includes('shine=true'),
+    },
+    skip: !selectedYear || !account || account.super_admin === true,
+    errorPolicy: 'all',
+    fetchPolicy: 'network-only',
+  });
+
   const handleToNextPage = (num: number, params?: string) => {
     if (account?.super_admin) {
       router.push(`${paths.destiny}`);
       return;
     }
-    // router.push(`${paths.destiny}`);
-    router.push(`${paths.payment}/${num}${params ? `?${params}` : ''}`);
+
+    // Set selected year and params for the query
+    setSelectedYear(num);
+    setSelectedParams(params || '');
+
+    // Trigger the purchase check query
+    refetchPurchase({
+      years: num,
+      shine: params?.includes('shine=true') || false,
+    });
   };
+
+  const handleConfirmPurchase = () => {
+    if (selectedYear) {
+      const existingParams = selectedParams ? `${selectedParams}&` : '';
+      router.push(
+        `${paths.payment}/${selectedYear}?${existingParams}confirm_another_purchase=true`
+      );
+    }
+    confirm.onFalse();
+  };
+
+  const handleCancelPurchase = () => {
+    confirm.onFalse();
+    setSelectedYear(null);
+    setSelectedParams('');
+
+    // If user cancels, go to destiny page (like super admin)
+    router.push(`${paths.destiny}`);
+  };
+
+  // Check if user has already purchased and used credit for this year
+  useEffect(() => {
+    if (
+      purchaseData?.checkUserPurchase?.success &&
+      purchaseData.checkUserPurchase.result?.has_purchased
+    ) {
+      const purchaseResult = purchaseData.checkUserPurchase.result;
+
+      // If user has purchased and used their credit (used_date exists), show confirmation dialog
+      if (
+        purchaseResult.history_id &&
+        purchaseResult.history_id !== 'admin-bypass' &&
+        purchaseResult.is_credit_used &&
+        purchaseResult.used_date
+      ) {
+        confirm.onTrue();
+      } else if (purchaseResult.history_id && purchaseResult.history_id !== 'admin-bypass') {
+        // User has purchased but hasn't used credit yet, go to destiny page
+        router.push(
+          `${paths.destiny}?history=${purchaseResult.history_id}${selectedParams ? `&${selectedParams}` : ''}`
+        );
+      } else {
+        // User hasn't purchased yet, go directly to payment
+        router.push(
+          `${paths.payment}/${selectedYear}${selectedParams ? `?${selectedParams}` : ''}`
+        );
+      }
+    } else if (
+      purchaseData?.checkUserPurchase?.success &&
+      !purchaseData.checkUserPurchase.result?.has_purchased
+    ) {
+      // User hasn't purchased, go directly to payment
+      router.push(`${paths.payment}/${selectedYear}${selectedParams ? `?${selectedParams}` : ''}`);
+    }
+  }, [purchaseData, selectedYear, selectedParams, confirm, router]);
 
   // Responsive SVG dimensions
   const svgWidth = isSmDown ? 600 : isMdDown ? 700 : 800;
@@ -271,6 +366,36 @@ function App() {
           </Grid2>
         </Grid2>
       </Container>
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        open={confirm.value}
+        onClose={handleCancelPurchase}
+        title="Already Purchased!"
+        content={
+          <Box>
+            <Typography variant="subtitle1">
+              You have already purchased a{' '}
+              <strong>
+                {selectedYear} {selectedYear === 1 ? 'year' : 'years'}
+              </strong>{' '}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Do you want to make another purchase for the same duration?
+            </Typography>
+          </Box>
+        }
+        action={
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleConfirmPurchase}
+            loading={purchaseLoading}
+          >
+            Make Another Purchase
+          </Button>
+        }
+      />
     </Box>
   );
 }

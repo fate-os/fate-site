@@ -29,6 +29,8 @@ type CheckUserPurchase {
     history_id: String
     paid_amount: Float
     year_count: Int
+    is_credit_used: Boolean
+    used_date: Date
 }
 
 type HasPurchaseHistoryDetails {
@@ -93,8 +95,14 @@ type Query {
     hasPurchaseHistory:HasPurchaseHistoryDetails
 }
 
+type MarkCreditUsedDetails {
+    success: Boolean!
+    message: String
+}
+
 type Mutation {
     applyCoupon(code:String!):ApplyCouponResponse
+    markCreditUsed(history_id: String!, used_date: Date!): MarkCreditUsedDetails
 }
 
 `;

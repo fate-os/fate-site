@@ -25,7 +25,7 @@ export const PaymentSchema = zod.object({
   code: zod.string().min(1, { message: 'Code is required!' }),
 });
 
-export function PaymentSummary({ years, isShine, sx, ...other }) {
+export function PaymentSummary({ years, isShine, confirmAnotherPurchase = false, sx, ...other }) {
   const [continuePayment, setContinuePayment] = useState(0);
   const { t } = useTranslate('app');
 
@@ -90,6 +90,13 @@ export function PaymentSummary({ years, isShine, sx, ...other }) {
         <Typography variant="h6" sx={{ mb: 5 }}>
           {t('payment.summery')}
         </Typography>
+
+        {confirmAnotherPurchase && (
+          <Alert severity="info" sx={{ mb: 3 }}>
+            You are making an additional purchase for the same duration. This will give you another
+            credit to view different results.
+          </Alert>
+        )}
 
         <Stack spacing={2.5}>
           <Stack direction="row" justifyContent="space-between">
