@@ -43,6 +43,7 @@ CREATE TABLE "payment_history" (
     "id" TEXT NOT NULL,
     "stripe_payment_id" TEXT,
     "stripe_session_id" TEXT,
+    "metadata" TEXT,
     "paid_amount" DOUBLE PRECISION NOT NULL,
     "year_count" INTEGER NOT NULL,
     "user_id" TEXT NOT NULL,
@@ -81,6 +82,8 @@ CREATE TABLE "quote_parameter" (
     "right_side_arrow" "Direction",
     "left_side_arrow" "Direction",
     "bottom_arrow" "Direction",
+    "perpendicular" "Direction",
+    "has_circle" BOOLEAN,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 

@@ -54,16 +54,51 @@ export interface CheckUserPurchaseResponse {
   };
 }
 
-export interface SubscriptionHistory {
+export interface PaymentHistory {
   id: string;
-  invoice_number?: string;
-  summery?: string;
-  invoice_url?: string;
-  currency?: string;
-  status?: string;
-  amount?: number;
-  billing_month?: Date;
+  stripe_payment_id?: string;
+  stripe_session_id?: string;
+  metadata?: string;
+  paid_amount: number;
+  year_count: number;
+  user_id: string;
   created_at?: Date;
+  updated_at?: Date;
+  fate_quote_id?: string;
+  user?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  fate_quote?: {
+    id: string;
+    year_count: number;
+    date: Date;
+    gender?: string;
+  };
+}
+
+export interface PaymentHistoryResponse {
+  paymentHistory: {
+    success: boolean;
+    message: string;
+    result: PaymentHistory[];
+  };
+}
+
+export interface HasPurchaseHistory {
+  has_purchase_history: boolean;
+  total_purchases: number;
+  total_amount: number;
+}
+
+export interface HasPurchaseHistoryResponse {
+  hasPurchaseHistory: {
+    success: boolean;
+    message: string;
+    result: HasPurchaseHistory;
+  };
 }
 
 export type PriceMode = 'gbp' | 'usd';

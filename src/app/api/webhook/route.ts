@@ -108,6 +108,7 @@ export async function POST(req: NextRequest) {
               paid_amount: session.amount_total ? session.amount_total / 100 : 0,
               year_count: years,
               stripe_session_id: session.id,
+              metadata: JSON.stringify({ receiptUrl: '' }),
             },
           });
 
@@ -136,6 +137,23 @@ export async function POST(req: NextRequest) {
             }
           } catch (error) {
             console.error('Error retrieving payment details:', error);
+          }
+        }
+
+        // Update payment history with receipt URL
+        if (receiptUrl && paymentHistory) {
+          try {
+            const currentMetadata = JSON.parse(paymentHistory.metadata || '{}');
+            currentMetadata.receiptUrl = receiptUrl;
+
+            await FateOsClient.payment_history.update({
+              where: { id: paymentHistory.id },
+              data: {
+                metadata: JSON.stringify(currentMetadata),
+              },
+            });
+          } catch (error) {
+            console.error('Error updating payment history with receipt URL:', error);
           }
         }
 

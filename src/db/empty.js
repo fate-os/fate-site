@@ -8,4 +8,13 @@ const deleteUsers = async () => {
   await prismaClient.user.delete({ where: { email } });
 };
 
-deleteUsers();
+// deleteUsers();
+
+const findUserPaymentHistory = async () => {
+  const paymentHistory = await prismaClient.payment_history.findMany({
+    where: { user: { email: 'mayhe57@gmail.com' } },
+  });
+  console.log(paymentHistory);
+};
+
+// findUserPaymentHistory();

@@ -28,6 +28,7 @@ export const paths = {
   account: {
     profile: `${ROOTS.APP}/account/profile`,
     passwordAndSecurity: `${ROOTS.APP}/account/password-and-security`,
+    managePurchase: `${ROOTS.APP}/account/manage-purchase`,
   },
   dashboard: {
     coupon: {

@@ -342,11 +342,103 @@ const applyCouponCode = async (_: any, arg: CouponApplyArg, cont: AppContext) =>
   }
 };
 
+const getPaymentHistory = async (_: any, __: any, cont: AppContext) => {
+  try {
+    if (!cont.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, please log in and try again',
+      };
+    }
+
+    const paymentHistory = await FateOsClient.payment_history.findMany({
+      where: {
+        user_id: cont.account.account.id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+          },
+        },
+        fate_quote: {
+          select: {
+            id: true,
+            year_count: true,
+            date: true,
+            gender: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Payment history retrieved successfully',
+      result: paymentHistory,
+    };
+  } catch (error: any) {
+    console.error('Unexpected error in getPaymentHistory:', error);
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+    };
+  }
+};
+
+const checkHasPurchaseHistory = async (_: any, __: any, cont: AppContext) => {
+  try {
+    if (!cont.account?.account) {
+      return {
+        success: false,
+        message: 'Unable to find user, please log in and try again',
+      };
+    }
+
+    const paymentHistory = await FateOsClient.payment_history.findMany({
+      where: {
+        user_id: cont.account.account.id,
+      },
+      select: {
+        paid_amount: true,
+      },
+    });
+
+    const hasPurchaseHistory = paymentHistory.length > 0;
+    const totalPurchases = paymentHistory.length;
+    const totalAmount = paymentHistory.reduce((sum, payment) => sum + payment.paid_amount, 0);
+
+    return {
+      success: true,
+      message: 'Purchase history check completed',
+      result: {
+        has_purchase_history: hasPurchaseHistory,
+        total_purchases: totalPurchases,
+        total_amount: totalAmount,
+      },
+    };
+  } catch (error: any) {
+    console.error('Unexpected error in checkHasPurchaseHistory:', error);
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+    };
+  }
+};
+
 const resolver = {
   Query: {
     createSession: createSessionForSubscription,
     verifyPayment: verifyPaymentBySession,
     checkUserPurchase,
+    paymentHistory: getPaymentHistory,
+    hasPurchaseHistory: checkHasPurchaseHistory,
   },
   Mutation: {
     applyCoupon: applyCouponCode,

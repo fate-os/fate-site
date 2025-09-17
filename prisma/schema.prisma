@@ -50,6 +50,7 @@ model payment_history {
   id                String      @id @default(uuid())
   stripe_payment_id String?
   stripe_session_id String?
+  metadata          String?
   paid_amount       Float
   year_count        Int
   user              user        @relation(fields: [user_id], references: [id])
