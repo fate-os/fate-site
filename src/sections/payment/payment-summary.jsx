@@ -117,7 +117,7 @@ export function PaymentSummary({ years, isShine, confirmAnotherPurchase = false,
             <Typography variant="subtitle1">${totalAmount}*</Typography>
           </Stack>
 
-          <Box>
+          {/* <Box>
             <Form methods={methods} onSubmit={onSubmit}>
               <Stack direction={'row'} spacing={2} alignItems={'center'}>
                 <Field.Text
@@ -147,7 +147,7 @@ export function PaymentSummary({ years, isShine, confirmAnotherPurchase = false,
                 {appliedCoupon.name} coupon code.
               </Alert>
             )}
-          </Box>
+          </Box> */}
 
           {appliedCoupon && (
             <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -189,7 +189,7 @@ export function PaymentSummary({ years, isShine, confirmAnotherPurchase = false,
           onClose={() => setContinuePayment('')}
           years={continuePayment}
           isShine={isShine}
-          couponId={appliedCoupon ? appliedCoupon.id : undefined}
+          couponId={undefined}
         ></PaymentDialog>
       )}
     </Box>
