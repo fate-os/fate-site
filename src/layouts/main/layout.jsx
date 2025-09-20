@@ -77,7 +77,7 @@ export function MainLayout({ sx, data, children }) {
                       },
                     }}
                   />
-                  <Box>
+                  {/* <Box>
                     {account?.super_admin && (
                       <Button
                         variant="contained"
@@ -90,7 +90,7 @@ export function MainLayout({ sx, data, children }) {
                         Admin
                       </Button>
                     )}
-                  </Box>
+                  </Box> */}
                 </>
               ),
             }}

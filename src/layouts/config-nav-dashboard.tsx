@@ -27,19 +27,18 @@ export const adminNavData = [
   /**
    * Admin Data
    */
-
-  {
-    subheader: 'Admin Management',
-    items: [
-      {
-        title: 'Coupon',
-        path: paths.dashboard.coupon.root,
-        icon: ICONS.coupon,
-        children: [
-          { title: 'List', path: paths.dashboard.coupon.root },
-          { title: 'Create', path: paths.dashboard.coupon.new },
-        ],
-      },
-    ],
-  },
+  // {
+  //   subheader: 'Admin Management',
+  //   items: [
+  //     {
+  //       title: 'Coupon',
+  //       path: paths.dashboard.coupon.root,
+  //       icon: ICONS.coupon,
+  //       children: [
+  //         { title: 'List', path: paths.dashboard.coupon.root },
+  //         { title: 'Create', path: paths.dashboard.coupon.new },
+  //       ],
+  //     },
+  //   ],
+  // },
 ];
