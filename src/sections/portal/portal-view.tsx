@@ -22,6 +22,7 @@ import { ConfirmDialog } from '@/components/custom-dialog';
 import { useQuery } from '@apollo/client';
 import { CHECK_USER_PURCHASE } from '@/graphql/query/Payment';
 import { CheckUserPurchaseResponse } from '@/types';
+import { toast } from 'src/components/snackbar';
 
 function App() {
   const { account } = useAppSelector((s) => s.auth);
@@ -56,21 +57,25 @@ function App() {
     fetchPolicy: 'network-only',
   });
 
-  const handleToNextPage = (num: number, params?: string) => {
-    if (account?.super_admin) {
-      router.push(`${paths.destiny}`);
-      return;
+  const handleToNextPage = async (num: number, params?: string) => {
+    try {
+      if (account?.super_admin) {
+        router.push(`${paths.destiny}`);
+        return;
+      }
+
+      // Set selected year and params for the query
+      setSelectedYear(num);
+      setSelectedParams(params || '');
+
+      // Trigger the purchase check query
+      await refetchPurchase({
+        years: num,
+        shine: params?.includes('shine=true') || false,
+      });
+    } catch (error) {
+      toast.error('Failed to fetch purchase data');
     }
-
-    // Set selected year and params for the query
-    setSelectedYear(num);
-    setSelectedParams(params || '');
-
-    // Trigger the purchase check query
-    refetchPurchase({
-      years: num,
-      shine: params?.includes('shine=true') || false,
-    });
   };
 
   const handleConfirmPurchase = () => {
@@ -88,8 +93,17 @@ function App() {
     setSelectedYear(null);
     setSelectedParams('');
 
-    // If user cancels, go to destiny page (like super admin)
-    router.push(`${paths.destiny}`);
+    const purchaseResult = purchaseData?.checkUserPurchase.result;
+
+    if (purchaseResult?.history_id) {
+      // User has purchased but hasn't used credit yet, go to destiny page
+      router.push(
+        `${paths.destiny}?history=${purchaseResult.history_id}${selectedParams ? `&${selectedParams}` : ''}`
+      );
+    } else {
+      router.push(`${paths.payment}/${selectedYear}${selectedParams ? `?${selectedParams}` : ''}`);
+    }
+    // router.push(`${paths.destiny}`);
   };
 
   // Check if user has already purchased and used credit for this year
@@ -101,14 +115,9 @@ function App() {
       const purchaseResult = purchaseData.checkUserPurchase.result;
 
       // If user has purchased and used their credit (used_date exists), show confirmation dialog
-      if (
-        purchaseResult.history_id &&
-        purchaseResult.history_id !== 'admin-bypass' &&
-        purchaseResult.is_credit_used &&
-        purchaseResult.used_date
-      ) {
+      if (purchaseResult.history_id && purchaseResult.is_credit_used && purchaseResult.used_date) {
         confirm.onTrue();
-      } else if (purchaseResult.history_id && purchaseResult.history_id !== 'admin-bypass') {
+      } else if (purchaseResult.history_id) {
         // User has purchased but hasn't used credit yet, go to destiny page
         router.push(
           `${paths.destiny}?history=${purchaseResult.history_id}${selectedParams ? `&${selectedParams}` : ''}`
