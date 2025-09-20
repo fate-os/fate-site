@@ -90,7 +90,7 @@ export function Footer({ layoutQuery, sx }) {
                 [theme.breakpoints.up(layoutQuery)]: { mx: 'unset' },
               }}
             >
-              Fate Os helps you uncover the destiny of a person based on their name and birthday
+              FATE OS helps you uncover the destiny of a person based on their name and birthday
               date. Explore insights and predictions to understand the journey of life better
             </Typography>
           </Grid>
@@ -136,7 +136,7 @@ export function Footer({ layoutQuery, sx }) {
         </Grid>
         <Divider sx={{ my: 4, borderColor: '#e5e7eb' }} />
         <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-          © {new Date().getFullYear()} Fate Os. All rights reserved.
+          © {new Date().getFullYear()} FATE OS. All rights reserved.
         </Typography>
       </Container>
     </Box>

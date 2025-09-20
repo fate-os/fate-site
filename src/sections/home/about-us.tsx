@@ -33,7 +33,7 @@ const AboutUs = () => {
                 <Grid2 container spacing={{ xs: 2, md: 5 }}>
                   <Grid2 size={{ md: 4, sm: 5, xs: 12 }}>
                     <Image
-                      alt="Mei Zhu He – Founder of Fate OS Inc."
+                      alt="Mei Zhu He – Founder of FATE OS, INC."
                       src="/assets/images/founder-1.jpeg"
                       width={200}
                       height={195}

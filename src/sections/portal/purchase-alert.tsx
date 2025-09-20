@@ -17,7 +17,7 @@ const PurchaseAlert = ({ hasPurchaseHistory, purchaseHistoryData }: Props) => {
   // Session-based hide for free alert
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (sessionStorage.getItem('hide_free_alert')) {
+      if (localStorage.getItem('hide_free_alert')) {
         setShowFreeAlert(false);
       } else {
         setShowFreeAlert(hasPurchaseHistory || false);
@@ -27,7 +27,7 @@ const PurchaseAlert = ({ hasPurchaseHistory, purchaseHistoryData }: Props) => {
 
   const handleCloseFreeAlert = () => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('hide_free_alert', '1');
+      localStorage.setItem('hide_free_alert', '1');
     }
     setShowFreeAlert(false);
   };

@@ -26,12 +26,13 @@ import { HistoryTableRow } from './components/payment-history-table-row';
 import { HistoryTableToolbar } from './components/payment-history-table-toolbar';
 import { HistoryFiltersResult } from './components/payment-history-table-filters-result';
 
-import { Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
 import { useLazyQuery } from '@apollo/client';
 import { GET_PAYMENT_HISTORY } from '@/graphql/query/Payment';
 import { PaymentHistory, PaymentHistoryResponse } from '@/types';
 import { ProgressLoader } from '@/components/loading-screen/loaders';
-
+import { Iconify } from '@/components/iconify';
+import { useRouter } from 'src/routes/hooks';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -46,7 +47,7 @@ const TABLE_HEAD = [
 
 export function PurchaseHistoryView() {
   const table = useTable();
-
+  const router = useRouter();
   const [tableData, setTableData] = useState<PaymentHistory[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -84,9 +85,15 @@ export function PurchaseHistoryView() {
   return (
     <>
       <DashboardContent maxWidth="xl" sx={{ mb: 15 }}>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Purchase History
-        </Typography>
+        <Stack direction={'row'} alignItems={'center'} gap={2} sx={{ mb: 5 }}>
+          <IconButton
+            sx={{ border: (t) => `1px solid ${t.palette.divider}` }}
+            onClick={() => router.back()}
+          >
+            <Iconify icon="mi:arrow-left" />
+          </IconButton>
+          <Typography variant="h4">Purchase History</Typography>
+        </Stack>
 
         <Card sx={{ boxShadow: 'none', border: (t) => `1px solid ${t.palette.divider}` }}>
           <HistoryTableToolbar

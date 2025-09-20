@@ -72,7 +72,7 @@ export const VERIFY_TEMPLATE = (code: number) => `<!DOCTYPE html>
     <div class="code-box">${code}</div>
     <p style="font-size:14px;color:#888;">This code will expire in 15 minutes. Please do not share it with anyone.</p>
     <div class="footer">
-      &copy; ${new Date().getFullYear()} Fate Os
+      &copy; ${new Date().getFullYear()} FATE OS
     </div>
   </div>
 </body>
@@ -92,7 +92,7 @@ export function generateOTPEmail(params: OTPEmailParams): string {
     otp,
     recipientName,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
   } = params;
@@ -141,7 +141,7 @@ export function generateWelcomeEmail(params: WelcomeEmailParams): string {
     recipientEmail,
     quickStartLink,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
   } = params;
@@ -188,7 +188,7 @@ export function generateResetPinEmail(params: ResetPinEmailParams): string {
     recipientName,
     otp,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
     expirationTime = '15 minutes',
@@ -242,7 +242,7 @@ export function generatePaymentConfirmationEmail(params: PaymentConfirmationEmai
     invoice_pdf,
     recipientName,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
     paymentAmount,
@@ -300,7 +300,7 @@ export function generateRefundInitiatedEmail(params: RefundEmailParams): string 
     refundDate,
     currency,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
   } = params;
@@ -347,7 +347,7 @@ export function generateFailedSubscriptionEmail(params: SubscriptionFailEmailPar
     recipientName,
     subscription_plan,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
   } = params;
@@ -393,7 +393,7 @@ export function generatePastDueCancellationEmail(params: CancellationEmailParams
     recipientName,
     subscription_plan,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     paymentUpdateLink = '#',
   } = params;
@@ -440,7 +440,7 @@ export function generateFreeTrialStartedEmail(params: FreeTrialEmailParams): str
     recipientName,
     trialEndDate,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     dashboardLink = '#',
     trialDuration = 7,
@@ -487,7 +487,7 @@ export function generateDeletedUserEmail(params: DeletedUserEmailParams): string
   const {
     recipientName,
     supportEmail = 'contactus@fate-os.com',
-    companyName = 'Fate Os',
+    companyName = 'FATE OS',
     brandColor = '#00A76F',
     textColor = '#333333',
     forSixMonth = false,

@@ -4,9 +4,9 @@ import { HomeView } from 'src/sections/home/view';
 // ----------------------------------------------------------------------
 
 export const metadata: Metadata = {
-  title: 'Fate Os | Discover the Fate of a Human Based on Name and Birthday',
+  title: 'FATE OS | Discover the Fate of a Human Based on Name and Birthday',
   description:
-    'Fate Os helps you uncover the destiny of a person based on their name and birthday date. Explore insights and predictions to understand the journey of life better.',
+    'FATE OS helps you uncover the destiny of a person based on their name and birthday date. Explore insights and predictions to understand the journey of life better.',
   icons: {
     icon: '/favicon.ico', // Default favicon
     shortcut: '/favicon.ico', // Shortcut icon (optional)

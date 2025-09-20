@@ -5,28 +5,6 @@ const prismaClient = new PrismaClient();
 
 const updateQuote = async () => {
   try {
-    // const findFirst = await prismaClient.fate_quote.findFirst({
-    //   where: {
-    //     date: moment.utc('2004-10-10 01:00:00').toDate(),
-    //     gender: 'male',
-    //     year_count: 60,
-    //   },
-    // });
-    // const deleteQuote = await prismaClient.fate_quote.delete({
-    //   where: {
-    //     id: findFirst.id,
-    //   },
-    // });
-    // const deleteParam = await prismaClient.quote_parameter.delete({
-    //   where: {
-    //     id: findFirst.quote_parameter_id,
-    //   },
-    // });
-
-    // console.log(deleteParam, '--- deleteParam ---');
-    // console.log(deleteQuote, '--- deleteQuote ---');
-
-    // Add 9 new fate_quote entries with their corresponding quote_parameter objects
     const quoteParams = await prismaClient.$transaction([
       prismaClient.quote_parameter.create({ data: { straight_left: 'up', straight_right: 'up' } }), // 13
       prismaClient.quote_parameter.create({ data: { straight_left: 'down' } }), // 14
@@ -107,4 +85,17 @@ const updateQuote = async () => {
   }
 };
 
-updateQuote();
+// updateQuote();
+const updateQuoteParameter = async () => {
+  const quoteParams = await prismaClient.fate_quote.findFirst({
+    where: { date: moment.utc('1935-07-03 13:30:00').toDate(), gender: 'male', year_count: 1 },
+  });
+  // console.log(quoteParams, '--- quoteParams ---');
+  const updateQuoteParam = await prismaClient.quote_parameter.update({
+    where: { id: quoteParams.quote_parameter_id },
+    data: { straight_left: 'down', straight_right: 'down' },
+  });
+  console.log(updateQuoteParam, '--- updateQuoteParam ---');
+};
+
+updateQuoteParameter();

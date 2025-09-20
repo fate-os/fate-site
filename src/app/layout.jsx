@@ -22,9 +22,9 @@ import { ClientApolloProvider } from '@/store/providers/ApolloWrapper';
 
 // ----------------------------------------------------------------------
 
-const title = 'Fate Os | Discover the Fate of a Human Based on Name and Birthday';
+const title = 'FATE OS | Discover the Fate of a Human Based on Name and Birthday';
 const description =
-  'Fate Os helps you uncover the destiny of a person based on their name and birthday date. Explore insights and predictions to understand the journey of life better.';
+  'FATE OS helps you uncover the destiny of a person based on their name and birthday date. Explore insights and predictions to understand the journey of life better.';
 const image = '/assets/fateos_thumb.jpg';
 
 export const metadata = {
@@ -49,26 +49,26 @@ export const metadata = {
     'birthday predictions',
     'life journey',
     'human fate',
-    'Fate Os',
+    'FATE OS',
     'destiny insights',
     'life predictions',
     'name and birthday analysis',
   ],
-  author: 'Fate Os Team',
+  author: 'FATE OS Team',
   openGraph: {
     title: title,
     description: description,
     url: CONFIG.site.assetURL,
     type: 'website',
 
-    siteName: 'Fate Os',
+    siteName: 'FATE OS',
   },
   twitter: {
     card: 'summary_large_image',
     title: title,
     description: description,
     images: [image],
-    creator: 'Fate Os',
+    creator: 'FATE OS',
     site: '@FateOs',
   },
 
