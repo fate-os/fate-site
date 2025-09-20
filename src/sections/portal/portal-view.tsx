@@ -60,7 +60,9 @@ function App() {
   const handleToNextPage = async (num: number, params?: string) => {
     try {
       if (account?.super_admin) {
-        router.push(`${paths.destiny}`);
+        router.push(
+          `${paths.destiny}?year_count=${num}&shine=${params?.includes('shine=true') || false}`
+        );
         return;
       }
 

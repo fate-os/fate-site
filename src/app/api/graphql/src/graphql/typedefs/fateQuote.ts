@@ -46,7 +46,7 @@ type FateQuoteDetails {
 }
 
 type Query {
-  getFateQuote(date: Date, gender: String, shine: Boolean, history_id: String): FateQuoteDetails
+  getFateQuote(date: Date, gender: String, shine: Boolean, history_id: String, year_count: Int): FateQuoteDetails
 }
 
 type Mutation {

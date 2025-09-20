@@ -16,10 +16,12 @@ import { CheckUserPurchaseResponse } from '@/types';
 export default function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ history: string; shine?: string }>;
+  searchParams: Promise<{ history: string; shine?: string; year_count?: string }>;
   params: Promise<{}>;
 }) {
-  const [params, setParams] = useState<{ history?: string; shine?: string }>({});
+  const [params, setParams] = useState<{ history?: string; shine?: string; year_count?: string }>(
+    {}
+  );
   const [error, setError] = useState<string | null>(null);
   const { account, loadingAccount } = useAppSelector((s) => s.auth);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +31,7 @@ export default function Page({
       try {
         const resolvedParams = await searchParams;
         setParams(resolvedParams);
+        // console.log('resolvedParams', resolvedParams);
         setIsLoading(false);
       } catch (err) {
         console.error('Error loading search params:', err);
@@ -40,9 +43,10 @@ export default function Page({
   }, [searchParams]);
 
   // Extract parameters
-  const { history, shine } = params;
+  const { history, shine, year_count } = params;
   const isShine = shine === 'true';
   const years = isShine ? 60 : 1; // Default to 1 year if not specified
+  // const queryYearCount = year_count ? parseInt(year_count) : 0;
 
   // GraphQL query to check user purchase (similar to payment page)
   const {
@@ -53,6 +57,7 @@ export default function Page({
     variables: {
       years,
       shine: isShine,
+      // ...(queryYearCount && typeof queryYearCount === 'number' && { year_count: queryYearCount }),
     },
     skip: !account || account.super_admin === true, // Skip query for super admins
     errorPolicy: 'all',

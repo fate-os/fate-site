@@ -9,6 +9,7 @@ type GetFateQuoteArgs = {
   gender?: string;
   shine?: boolean;
   history_id?: string;
+  year_count?: number;
 };
 
 const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext) => {
@@ -47,6 +48,9 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
     // Check if user is super admin - if so, skip purchase requirement
     const isSuperAdmin = context.account.account.super_admin === true;
 
+    // Determine the year_count to use for the query
+    let queryYearCount = args.year_count; // Default to the year_count from arguments
+
     // If not super admin and history_id is provided, check the payment history count
     let shouldFilterQuoteParameters = false;
     if (!isSuperAdmin && history_id) {
@@ -78,9 +82,14 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
         }
       }
 
-      // If payment history exists and year_count is not 60, filter quote parameters
-      if (paymentHistory && paymentHistory.year_count !== 60) {
-        shouldFilterQuoteParameters = true;
+      // Use year_count from payment_history for non-super admin users
+      if (paymentHistory) {
+        queryYearCount = paymentHistory.year_count;
+
+        // If payment history exists and year_count is not 60, filter quote parameters
+        if (paymentHistory.year_count !== 60) {
+          shouldFilterQuoteParameters = true;
+        }
       }
     }
 
@@ -104,12 +113,14 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       quoteParameterWhere.shine = 'up';
     }
 
+    console.log('queryYearCount', queryYearCount);
     // Find fate quote with related quote parameters
     // Search for exact time match in UTC
     const [fateQuote] = await FateOsClient.fate_quote.findMany({
       where: {
         date: exactDateUTC,
         ...(gender && { gender }),
+        ...(queryYearCount && { year_count: queryYearCount }),
         quote_parameter: quoteParameterWhere,
       },
       include: {

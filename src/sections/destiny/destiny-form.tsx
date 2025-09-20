@@ -148,7 +148,8 @@ const DestinyForm = (props: Props) => {
       const urlParams = new URLSearchParams(window.location.search);
       const shine = urlParams.get('shine') === 'true';
       const history_id = urlParams.get('history');
-
+      const year_count = urlParams.get('year_count');
+      console.log('year_count', year_count);
       // Call the GraphQL query
       const { data: queryData } = await getFateQuote({
         variables: {
@@ -156,6 +157,7 @@ const DestinyForm = (props: Props) => {
           gender: data.gender,
           shine: shine,
           history_id: history_id,
+          year_count: year_count ? parseInt(year_count) : undefined,
         },
       });
 

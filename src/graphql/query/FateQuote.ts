@@ -1,8 +1,20 @@
 import { gql } from '@apollo/client';
 
 export const GET_FATE_QUOTE = gql`
-  query GetFateQuote($date: Date!, $gender: String, $shine: Boolean, $history_id: String) {
-    getFateQuote(date: $date, gender: $gender, shine: $shine, history_id: $history_id) {
+  query GetFateQuote(
+    $date: Date!
+    $gender: String
+    $shine: Boolean
+    $history_id: String
+    $year_count: Int
+  ) {
+    getFateQuote(
+      date: $date
+      gender: $gender
+      shine: $shine
+      history_id: $history_id
+      year_count: $year_count
+    ) {
       success
       message
       result {
