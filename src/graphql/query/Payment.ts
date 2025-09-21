@@ -24,8 +24,8 @@ export const VERIFY_PAYMENT = gql`
 `;
 
 export const CHECK_USER_PURCHASE = gql`
-  query CheckUserPurchase($years: Int, $shine: Boolean, $year_count: Int) {
-    checkUserPurchase(years: $years, shine: $shine, year_count: $year_count) {
+  query CheckUserPurchase($years: Int, $shine: Boolean) {
+    checkUserPurchase(years: $years, shine: $shine) {
       success
       message
       result {
