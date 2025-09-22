@@ -81,7 +81,7 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
   };
 
   return (
-    <Box style={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', mt: 10 }}>
       {perpendicular === 'up' && (
         <Box
           style={{
@@ -137,8 +137,8 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
             >
               <Iconify
                 icon="game-icons:circle"
-                width={250}
-                height={250}
+                width={straightLeft && straightLeft ? 400 : 25}
+                height={straightLeft && straightLeft ? 400 : 25}
                 color={theme.palette.primary.main}
               ></Iconify>
             </Box>

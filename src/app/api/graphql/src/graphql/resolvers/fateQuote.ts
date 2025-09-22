@@ -113,7 +113,6 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       quoteParameterWhere.shine = 'up';
     }
 
-    console.log('queryYearCount', queryYearCount);
     // Find fate quote with related quote parameters
     // Search for exact time match in UTC
     const [fateQuote] = await FateOsClient.fate_quote.findMany({
