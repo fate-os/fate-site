@@ -133,13 +133,14 @@ export type DestinyFormValues = {
   day: string | null;
   time: string | null;
   gender: string;
+  rainbow?: boolean;
 };
 
 export interface FateQuoteResponse {
   getFateQuote: {
     success: boolean;
     message: string;
-    result: FateQuoteResult | null;
+    result: FateQuoteResult[] | null;
   };
 }
 
@@ -157,7 +158,9 @@ export type Direction =
   | 'left'
   | 'right'
   | 'both_left_and_right'
-  | 'both_up_and_down';
+  | 'both_up_and_down'
+  | 'straight_horizontal'
+  | 'straight_vertical';
 
 export interface QuoteParameter {
   id: string;

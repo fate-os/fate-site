@@ -137,8 +137,8 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
             >
               <Iconify
                 icon="game-icons:circle"
-                width={straightLeft && straightLeft ? 400 : 25}
-                height={straightLeft && straightLeft ? 400 : 25}
+                width={straightLeft && straightLeft ? 400 : 250}
+                height={straightLeft && straightLeft ? 400 : 250}
                 color={theme.palette.primary.main}
               ></Iconify>
             </Box>
@@ -202,6 +202,14 @@ const TriangleDiagram: React.FC<TriangleProps> = ({
                     />
                   </g>
                 </svg>
+              )}
+              {straightBottom === 'straight_horizontal' && (
+                <Iconify
+                  icon="pixel:minus"
+                  width={120}
+                  height={120}
+                  color={theme.palette.primary.main}
+                />
               )}
             </>
           )}

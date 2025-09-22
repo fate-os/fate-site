@@ -113,9 +113,9 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       quoteParameterWhere.shine = 'up';
     }
 
-    // Find fate quote with related quote parameters
-    // Search for exact time match in UTC
-    const [fateQuote] = await FateOsClient.fate_quote.findMany({
+    // Find fate quotes with related quote parameters
+    // Search for all quotes matching the date (same day, different times)
+    const fateQuotes = await FateOsClient.fate_quote.findMany({
       where: {
         date: exactDateUTC,
         ...(gender && { gender }),
@@ -125,10 +125,12 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
       include: {
         quote_parameter: true,
       },
-      take: 1,
+      orderBy: {
+        date: 'asc', // Sort by time from lower to upper
+      },
     });
 
-    if (!fateQuote) {
+    if (!fateQuotes || fateQuotes.length === 0) {
       return {
         success: false,
         message: 'No fate quote found for the given date and gender',
@@ -137,7 +139,7 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
     }
 
     // Transform the data to match GraphQL schema
-    const result = {
+    const results = fateQuotes.map((fateQuote) => ({
       id: fateQuote.id,
       year_count: fateQuote.year_count,
       date: fateQuote?.date?.toISOString(),
@@ -159,12 +161,12 @@ const getFateQuote = async (_: any, args: GetFateQuoteArgs, context: AppContext)
         perpendicular: fateQuote?.quote_parameter?.perpendicular,
         has_circle: fateQuote?.quote_parameter?.has_circle,
       },
-    };
+    }));
 
     return {
       success: true,
-      message: 'Fate quote retrieved successfully',
-      result,
+      message: 'Fate quotes retrieved successfully',
+      result: results,
     };
   } catch (error: any) {
     console.log(error);

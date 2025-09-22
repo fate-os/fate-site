@@ -9,7 +9,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { schemaHelper } from 'src/components/hook-form';
 import { Field, Form } from '@/components/hook-form';
-import { Box, Button, MenuItem, Stack, Typography, Alert } from '@mui/material';
+import {
+  Box,
+  Button,
+  MenuItem,
+  Stack,
+  Typography,
+  Alert,
+  Checkbox,
+  FormControlLabel,
+} from '@mui/material';
 import dayjs from 'dayjs';
 import { DestinyFormValues } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -32,6 +41,7 @@ export const DestinySchema = zod.object({
   day: schemaHelper.date({ message: { required_error: 'Day is required!' } }),
   time: schemaHelper.date({ message: { required_error: 'Time is required!' } }),
   gender: zod.string().min(1, { message: 'Gender is required!' }),
+  rainbow: zod.boolean().optional(),
 });
 // .refine((data) => !fIsAfter(data.createDate, data.dueDate), {
 //   message: 'Due date cannot be earlier than create date!',
@@ -46,6 +56,7 @@ const DestinyForm = (props: Props) => {
       day: null,
       time: null,
       gender: '',
+      rainbow: false,
     }),
     []
   );
@@ -84,6 +95,7 @@ const DestinyForm = (props: Props) => {
   const yearValue = useWatch({ control, name: 'year' });
   const monthValue = useWatch({ control, name: 'month' });
   const dayValue = useWatch({ control, name: 'day' });
+  const rainbowValue = useWatch({ control, name: 'rainbow' });
 
   // When year changes, set month and day to Jan 1 of that year
   React.useEffect(() => {
@@ -146,10 +158,12 @@ const DestinyForm = (props: Props) => {
 
       // Get shine and history parameters from URL
       const urlParams = new URLSearchParams(window.location.search);
-      const shine = urlParams.get('shine') === 'true';
       const history_id = urlParams.get('history');
       const year_count = urlParams.get('year_count');
       console.log('year_count', year_count);
+
+      // Set shine based on rainbow checkbox or URL parameter
+      const shine = data.rainbow || urlParams.get('shine') === 'true';
       // Call the GraphQL query
       const { data: queryData } = await getFateQuote({
         variables: {
@@ -250,6 +264,13 @@ const DestinyForm = (props: Props) => {
                 </MenuItem>
               ))}
             </Field.Select>
+
+            {/* Rainbow checkbox - only show when year_count=60 */}
+            {(() => {
+              const urlParams = new URLSearchParams(window.location.search);
+              const year_count = urlParams.get('year_count');
+              return year_count === '60' ? <Field.Checkbox name="rainbow" label="Rainbow" /> : null;
+            })()}
 
             {queryError && (
               <Alert severity="error" sx={{ mb: 2 }}>

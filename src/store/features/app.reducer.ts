@@ -5,7 +5,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface AppState {
   destinyForm: DestinyFormValues | null;
-  fateQuoteResult: FateQuoteResult | null;
+  fateQuoteResult: FateQuoteResult[] | null;
   fateQuoteError: string | null;
 }
 
@@ -22,7 +22,7 @@ const slice = createSlice({
     destinyFormInit: (state, action: PayloadAction<DestinyFormValues | null>) => {
       state.destinyForm = action.payload;
     },
-    setFateQuoteResult: (state, action: PayloadAction<FateQuoteResult | null>) => {
+    setFateQuoteResult: (state, action: PayloadAction<FateQuoteResult[] | null>) => {
       state.fateQuoteResult = action.payload;
     },
     setFateQuoteError: (state, action: PayloadAction<string | null>) => {

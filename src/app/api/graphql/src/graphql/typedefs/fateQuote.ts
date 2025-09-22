@@ -7,6 +7,7 @@ enum Direction {
   right
   both_left_and_right
   both_up_and_down
+  straight_horizontal
 }
 
 type QuoteParameter {
@@ -42,7 +43,7 @@ type FateQuote {
 type FateQuoteDetails {
   success: Boolean!
   message: String
-  result: FateQuote
+  result: [FateQuote]
 }
 
 type Query {

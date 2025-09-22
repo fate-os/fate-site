@@ -240,8 +240,165 @@ const createQuote6 = async () => {
   console.log(quoteParam24, '--- quoteParam24 ---');
 };
 
+const createQuote7 = async () => {
+  const quote25 = await prismaClient.quote_parameter.create({
+    data: {
+      straight_bottom: 'both_left_and_right',
+    },
+  });
+
+  const quoteParam25 = await prismaClient.fate_quote.create({
+    data: {
+      date: moment.utc('1990-03-01 01:10:00').toDate(),
+      gender: 'female',
+      year_count: 1,
+      quote_parameter_id: quote25.id,
+    },
+  });
+
+  console.log(quote25, '--- quote25 ---');
+  console.log(quoteParam25, '--- quoteParam25 ---');
+};
+
+const createQuote8 = async () => {
+  const quote26 = await prismaClient.quote_parameter.create({
+    data: {
+      straight_left: 'up',
+      has_circle: true,
+    },
+  });
+
+  const quoteParam26 = await prismaClient.fate_quote.create({
+    data: {
+      date: moment.utc('2020-05-10 19:40:00').toDate(),
+      gender: 'male',
+      year_count: 1,
+      quote_parameter_id: quote26.id,
+    },
+  });
+
+  console.log(quote26, '--- quote26 ---');
+  console.log(quoteParam26, '--- quoteParam26 ---');
+};
+
+const updateQuote8Time = async () => {
+  try {
+    // Find the fate quote with the original time
+    const existingQuote = await prismaClient.fate_quote.findFirst({
+      where: {
+        date: moment.utc('2020-05-10 19:40:00').toDate(),
+        gender: 'male',
+        year_count: 1,
+      },
+    });
+
+    if (existingQuote) {
+      // Update the time to 11:30 PM (23:30)
+      const updatedQuote = await prismaClient.fate_quote.update({
+        where: { id: existingQuote.id },
+        data: {
+          date: moment.utc('2020-05-10 23:30:00').toDate(),
+        },
+      });
+
+      console.log('Updated quote8 time:', updatedQuote);
+    } else {
+      console.log('No quote found with the specified criteria');
+    }
+  } catch (error) {
+    console.error('Error updating quote8 time:', error);
+  }
+};
+
+const createQuote9 = async () => {
+  const quote27 = await prismaClient.quote_parameter.create({
+    data: {
+      straight_left: 'up',
+      has_circle: true,
+    },
+  });
+
+  const quoteParam27 = await prismaClient.fate_quote.create({
+    data: {
+      date: moment.utc('1962-10-16 23:30:00').toDate(),
+      gender: 'male',
+      year_count: 1,
+      quote_parameter_id: quote27.id,
+    },
+  });
+
+  console.log(quote27, '--- quote27 ---');
+  console.log(quoteParam27, '--- quoteParam27 ---');
+};
+
+const createMultipleQuotes = async () => {
+  try {
+    // Create quote parameters for all 3 quotes
+    const quoteParams = await prismaClient.$transaction([
+      // Quote 1: shine:up
+      prismaClient.quote_parameter.create({
+        data: { shine: 'up' },
+      }),
+      // Quote 2: has_circle:true, straight_left:down
+      prismaClient.quote_parameter.create({
+        data: {
+          has_circle: true,
+          straight_left: 'down',
+        },
+      }),
+      // Quote 3: has_circle:true, straight_bottom:straight_horizontal
+      prismaClient.quote_parameter.create({
+        data: {
+          has_circle: true,
+          straight_bottom: 'straight_horizontal',
+        },
+      }),
+    ]);
+
+    // Create fate quotes for all 3
+    const fateQuotes = await prismaClient.fate_quote.createMany({
+      data: [
+        // Quote 1: 1:30pm 7-20/1980 / Female - 60 year
+        {
+          date: moment.utc('1980-07-20 13:30:00').toDate(),
+          gender: 'female',
+          year_count: 60,
+          quote_parameter_id: quoteParams[0].id,
+        },
+        // Quote 2: 23:30 october/16/1962/ male - 1year
+        {
+          date: moment.utc('1962-10-16 23:30:00').toDate(),
+          gender: 'male',
+          year_count: 1,
+          quote_parameter_id: quoteParams[1].id,
+        },
+        // Quote 3: 1976/10-6/11:40am /female/ 1year
+        {
+          date: moment.utc('1976-10-06 11:40:00').toDate(),
+          gender: 'female',
+          year_count: 1,
+          quote_parameter_id: quoteParams[2].id,
+        },
+      ],
+    });
+
+    console.log('Quote parameters created:', quoteParams);
+    console.log('Fate quotes created:', fateQuotes.count);
+  } catch (error) {
+    console.error('Error creating multiple quotes:', error);
+    throw new Error(error);
+  } finally {
+    await prismaClient.$disconnect();
+  }
+};
+
 // createQuote3();
 // createQuote4();
 // updateQuote4Date();
 // createQuote5();
-createQuote6();
+// createQuote6();
+// createQuote7();
+// createQuote8();
+// updateQuote8Time();
+// createQuote9();
+createMultipleQuotes();

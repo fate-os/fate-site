@@ -103,6 +103,9 @@ enum Direction {
   right
   both_left_and_right
   both_up_and_down
+  //
+  straight_horizontal
+  straight_vertical
 }
 
 // enum AccountProvider {
